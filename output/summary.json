@@ -1,0 +1,46 @@
+{
+  "raw_rows": 1181845,
+  "clean_detections": 915940,
+  "harmonized": {
+    "detections": 915940,
+    "events": 432881,
+    "events_tr": 430815
+  },
+  "modis": {
+    "detections": 243603,
+    "events": 147054,
+    "events_tr": 146367
+  },
+  "viirs": {
+    "detections": 672337,
+    "events": 328934,
+    "events_tr": 327243
+  },
+  "agreement": {
+    "viirs_only": 286896,
+    "modis_only": 111398,
+    "both": 34587
+  },
+  "satellites": {
+    "Aqua": {
+      "first": "2002-07-04",
+      "last": "2025-12-29",
+      "detections": 116585
+    },
+    "NOAA-20": {
+      "first": "2018-04-01",
+      "last": "2025-12-31",
+      "detections": 226761
+    },
+    "S-NPP": {
+      "first": "2012-01-20",
+      "last": "2025-12-31",
+      "detections": 445576
+    },
+    "Terra": {
+      "first": "2001-01-09",
+      "last": "2025-12-23",
+      "detections": 127018
+    }
+  }
+}

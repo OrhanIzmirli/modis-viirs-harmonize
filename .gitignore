@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+data/raw/
+.venv/
+*.log
+data/raw_archive/
+output/events.geojson
+output/detections_harmonized.csv

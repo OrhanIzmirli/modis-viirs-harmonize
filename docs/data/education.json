@@ -1,0 +1,102 @@
+{
+ "note": "Short, sourced context shown next to the calendar. Every sentence maps to the cited page.",
+ "mediterranean_provinces": [
+  "TR-07",
+  "TR-48",
+  "TR-35",
+  "TR-09",
+  "TR-33",
+  "TR-01",
+  "TR-31",
+  "TR-17",
+  "TR-10",
+  "TR-45",
+  "TR-20",
+  "TR-80",
+  "TR-15",
+  "TR-32"
+ ],
+ "agricultural_provinces": [
+  "TR-63",
+  "TR-21",
+  "TR-47",
+  "TR-72",
+  "TR-56",
+  "TR-73",
+  "TR-27",
+  "TR-02",
+  "TR-79",
+  "TR-42",
+  "TR-01",
+  "TR-22",
+  "TR-59",
+  "TR-39",
+  "TR-44",
+  "TR-46"
+ ],
+ "dry_season": {
+  "title": "Why does this period matter?",
+  "points": [
+   {
+    "text": "Around the Mediterranean the dry summer can last from June to October, with almost no rain.",
+    "source_name": "FAO, Unasylva No. 162",
+    "source_url": "https://www.fao.org/4/t9500e/t9500e02.htm"
+   },
+   {
+    "text": "Hot, dry and windy weather lets fires start, grow and spread more easily.",
+    "source_name": "NOAA National Severe Storms Laboratory",
+    "source_url": "https://www.nssl.noaa.gov/education/students/wxfriendscards/txt/blaze.html"
+   },
+   {
+    "text": "Fire usually moves faster uphill, and wind feeds it oxygen and pushes it toward new fuel.",
+    "source_name": "US National Park Service",
+    "source_url": "https://www.nps.gov/articles/wildland-fire-behavior.htm"
+   }
+  ],
+  "prevention": [
+   {
+    "text": "If you see smoke in a forest or field, keep your distance and call 112 right away.",
+    "source_name": "OGM (General Directorate of Forestry)",
+    "source_url": "https://www.ogm.gov.tr/tr/haberler/hasat-mevsiminde-orman-yangini-alarmi"
+   },
+   {
+    "text": "At harvest time, sparks from harvesting machines can start fires, so machine maintenance matters.",
+    "source_name": "OGM (General Directorate of Forestry)",
+    "source_url": "https://www.ogm.gov.tr/tr/haberler/hasat-mevsiminde-orman-yangini-alarmi"
+   }
+  ]
+ },
+ "off_season": {
+  "title": "Why does this period matter?",
+  "points": [
+   {
+    "text": "Some fires are too small or not hot enough for a satellite to notice, so quiet weeks on the calendar can still contain small burns.",
+    "source_name": "NASA Earthdata FIRMS FAQ",
+    "source_url": "https://www.earthdata.nasa.gov/faq/firms-faq"
+   },
+   {
+    "text": "A satellite hot spot is not always a vegetation fire. It can also be a volcano or a gas flare, which is why static industrial sources are filtered out here.",
+    "source_name": "NASA Earthdata FIRMS FAQ",
+    "source_url": "https://www.earthdata.nasa.gov/faq/firms-faq"
+   }
+  ],
+  "prevention": [
+   {
+    "text": "If you see smoke in a forest or field, keep your distance and call 112 right away.",
+    "source_name": "OGM (General Directorate of Forestry)",
+    "source_url": "https://www.ogm.gov.tr/tr/haberler/hasat-mevsiminde-orman-yangini-alarmi"
+   }
+  ]
+ },
+ "stubble": {
+  "title": "Agricultural burning season",
+  "text": "Burning crop stubble damages soil life and organic matter, leaves soil open to erosion, and its smoke can reduce visibility on roads. Stubble burning is banned in Türkiye and violations are penalised.",
+  "source_name": "Şanlıurfa Provincial Directorate of Agriculture and Forestry",
+  "source_url": "https://sanliurfa.tarimorman.gov.tr/Haber/9/aniz-yakmanin-zararlari"
+ },
+ "caveat": {
+  "text": "No detection does not mean no fire: clouds, thick smoke or tree canopy can hide a fire, and a fire can start and end between two overpasses.",
+  "source_name": "NASA Earthdata FIRMS FAQ",
+  "source_url": "https://www.earthdata.nasa.gov/faq/firms-faq"
+ }
+}

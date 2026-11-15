@@ -1,0 +1,746 @@
+{
+  "dedup": {
+    "detections": 915940,
+    "events": 432881,
+    "ratio": 2.12,
+    "per_year": [
+      {
+        "year": 2001,
+        "modis": 5120.0,
+        "viirs": 0.0,
+        "events": 3322.0,
+        "ratio": 1.54
+      },
+      {
+        "year": 2002,
+        "modis": 6850.0,
+        "viirs": 0.0,
+        "events": 4352.0,
+        "ratio": 1.57
+      },
+      {
+        "year": 2003,
+        "modis": 7639.0,
+        "viirs": 0.0,
+        "events": 4775.0,
+        "ratio": 1.6
+      },
+      {
+        "year": 2004,
+        "modis": 7833.0,
+        "viirs": 0.0,
+        "events": 5049.0,
+        "ratio": 1.55
+      },
+      {
+        "year": 2005,
+        "modis": 8227.0,
+        "viirs": 0.0,
+        "events": 5307.0,
+        "ratio": 1.55
+      },
+      {
+        "year": 2006,
+        "modis": 9376.0,
+        "viirs": 0.0,
+        "events": 5733.0,
+        "ratio": 1.64
+      },
+      {
+        "year": 2007,
+        "modis": 8715.0,
+        "viirs": 0.0,
+        "events": 5322.0,
+        "ratio": 1.64
+      },
+      {
+        "year": 2008,
+        "modis": 6069.0,
+        "viirs": 0.0,
+        "events": 3666.0,
+        "ratio": 1.66
+      },
+      {
+        "year": 2009,
+        "modis": 19884.0,
+        "viirs": 0.0,
+        "events": 10744.0,
+        "ratio": 1.85
+      },
+      {
+        "year": 2010,
+        "modis": 13572.0,
+        "viirs": 0.0,
+        "events": 8177.0,
+        "ratio": 1.66
+      },
+      {
+        "year": 2011,
+        "modis": 18396.0,
+        "viirs": 0.0,
+        "events": 10538.0,
+        "ratio": 1.75
+      },
+      {
+        "year": 2012,
+        "modis": 7043.0,
+        "viirs": 24843.0,
+        "events": 16252.0,
+        "ratio": 1.96
+      },
+      {
+        "year": 2013,
+        "modis": 11462.0,
+        "viirs": 39946.0,
+        "events": 24496.0,
+        "ratio": 2.1
+      },
+      {
+        "year": 2014,
+        "modis": 6669.0,
+        "viirs": 22156.0,
+        "events": 14670.0,
+        "ratio": 1.96
+      },
+      {
+        "year": 2015,
+        "modis": 17973.0,
+        "viirs": 56427.0,
+        "events": 31556.0,
+        "ratio": 2.36
+      },
+      {
+        "year": 2016,
+        "modis": 13523.0,
+        "viirs": 47146.0,
+        "events": 28558.0,
+        "ratio": 2.12
+      },
+      {
+        "year": 2017,
+        "modis": 9538.0,
+        "viirs": 31755.0,
+        "events": 20636.0,
+        "ratio": 2.0
+      },
+      {
+        "year": 2018,
+        "modis": 7374.0,
+        "viirs": 50567.0,
+        "events": 25760.0,
+        "ratio": 2.25
+      },
+      {
+        "year": 2019,
+        "modis": 7700.0,
+        "viirs": 57494.0,
+        "events": 31227.0,
+        "ratio": 2.09
+      },
+      {
+        "year": 2020,
+        "modis": 8208.0,
+        "viirs": 63791.0,
+        "events": 32250.0,
+        "ratio": 2.23
+      },
+      {
+        "year": 2021,
+        "modis": 9345.0,
+        "viirs": 60274.0,
+        "events": 24369.0,
+        "ratio": 2.86
+      },
+      {
+        "year": 2022,
+        "modis": 5067.0,
+        "viirs": 32430.0,
+        "events": 20192.0,
+        "ratio": 1.86
+      },
+      {
+        "year": 2023,
+        "modis": 8282.0,
+        "viirs": 57550.0,
+        "events": 32859.0,
+        "ratio": 2.0
+      },
+      {
+        "year": 2024,
+        "modis": 11218.0,
+        "viirs": 74836.0,
+        "events": 37114.0,
+        "ratio": 2.32
+      },
+      {
+        "year": 2025,
+        "modis": 8520.0,
+        "viirs": 53122.0,
+        "events": 25957.0,
+        "ratio": 2.37
+      }
+    ],
+    "mode_counts": {
+      "harmonized": {
+        "detections": 915940,
+        "events": 432881,
+        "events_tr": 430815
+      },
+      "modis": {
+        "detections": 243603,
+        "events": 147054,
+        "events_tr": 146367
+      },
+      "viirs": {
+        "detections": 672337,
+        "events": 328934,
+        "events_tr": 327243
+      }
+    }
+  },
+  "match_rates": [
+    {
+      "window": "\u2264 12 h (event rule)",
+      "sensor": "MODIS",
+      "satellite": "Aqua",
+      "day_night": "D",
+      "n": 61333,
+      "matched": 0.6431
+    },
+    {
+      "window": "\u2264 12 h (event rule)",
+      "sensor": "MODIS",
+      "satellite": "Aqua",
+      "day_night": "N",
+      "n": 5209,
+      "matched": 0.9238
+    },
+    {
+      "window": "\u2264 12 h (event rule)",
+      "sensor": "MODIS",
+      "satellite": "Terra",
+      "day_night": "D",
+      "n": 46904,
+      "matched": 0.3482
+    },
+    {
+      "window": "\u2264 12 h (event rule)",
+      "sensor": "MODIS",
+      "satellite": "Terra",
+      "day_night": "N",
+      "n": 18429,
+      "matched": 0.4697
+    },
+    {
+      "window": "\u2264 12 h (event rule)",
+      "sensor": "VIIRS",
+      "satellite": "NOAA-20",
+      "day_night": "D",
+      "n": 162949,
+      "matched": 0.2298
+    },
+    {
+      "window": "\u2264 12 h (event rule)",
+      "sensor": "VIIRS",
+      "satellite": "NOAA-20",
+      "day_night": "N",
+      "n": 63812,
+      "matched": 0.3351
+    },
+    {
+      "window": "\u2264 12 h (event rule)",
+      "sensor": "VIIRS",
+      "satellite": "S-NPP",
+      "day_night": "D",
+      "n": 327132,
+      "matched": 0.2729
+    },
+    {
+      "window": "\u2264 12 h (event rule)",
+      "sensor": "VIIRS",
+      "satellite": "S-NPP",
+      "day_night": "N",
+      "n": 118444,
+      "matched": 0.325
+    },
+    {
+      "window": "\u2264 1 h (near-simultaneous)",
+      "sensor": "MODIS",
+      "satellite": "Aqua",
+      "day_night": "D",
+      "n": 61333,
+      "matched": 0.6016
+    },
+    {
+      "window": "\u2264 1 h (near-simultaneous)",
+      "sensor": "MODIS",
+      "satellite": "Aqua",
+      "day_night": "N",
+      "n": 5209,
+      "matched": 0.889
+    },
+    {
+      "window": "\u2264 1 h (near-simultaneous)",
+      "sensor": "MODIS",
+      "satellite": "Terra",
+      "day_night": "D",
+      "n": 46904,
+      "matched": 0.0798
+    },
+    {
+      "window": "\u2264 1 h (near-simultaneous)",
+      "sensor": "MODIS",
+      "satellite": "Terra",
+      "day_night": "N",
+      "n": 18429,
+      "matched": 0.0
+    },
+    {
+      "window": "\u2264 1 h (near-simultaneous)",
+      "sensor": "VIIRS",
+      "satellite": "NOAA-20",
+      "day_night": "D",
+      "n": 162949,
+      "matched": 0.159
+    },
+    {
+      "window": "\u2264 1 h (near-simultaneous)",
+      "sensor": "VIIRS",
+      "satellite": "NOAA-20",
+      "day_night": "N",
+      "n": 63812,
+      "matched": 0.1504
+    },
+    {
+      "window": "\u2264 1 h (near-simultaneous)",
+      "sensor": "VIIRS",
+      "satellite": "S-NPP",
+      "day_night": "D",
+      "n": 327132,
+      "matched": 0.1957
+    },
+    {
+      "window": "\u2264 1 h (near-simultaneous)",
+      "sensor": "VIIRS",
+      "satellite": "S-NPP",
+      "day_night": "N",
+      "n": 118444,
+      "matched": 0.1335
+    }
+  ],
+  "match_rates_by_sensor": {
+    "MODIS_D": {
+      "h12": 0.5153,
+      "h1": 0.3754
+    },
+    "MODIS_N": {
+      "h12": 0.5698,
+      "h1": 0.1959
+    },
+    "VIIRS_D": {
+      "h12": 0.2586,
+      "h1": 0.1835
+    },
+    "VIIRS_N": {
+      "h12": 0.3285,
+      "h1": 0.1394
+    }
+  },
+  "frp": {
+    "n_pairs": 19434,
+    "pearson_r_log10": 0.67,
+    "spearman_rho": 0.606,
+    "loglog_slope": 0.752,
+    "loglog_intercept": 0.206,
+    "median_ratio_viirs_over_modis": 0.788,
+    "by_daynight": {
+      "D": {
+        "n": 17852,
+        "pearson_r_log10": 0.662
+      },
+      "N": {
+        "n": 1582,
+        "pearson_r_log10": 0.735
+      }
+    }
+  },
+  "small_fire": {
+    "viirs_only_share": 0.6628,
+    "median_max_frp_viirs_only": 3.68,
+    "median_max_frp_both": 19.0,
+    "example": {
+      "event_id": "H385243",
+      "province": "TR-49",
+      "lat": 39.105,
+      "lon": 42.372,
+      "first_seen_utc": "2024-08-25 22:06:00",
+      "viirs_detections": 6,
+      "passes": 4,
+      "max_frp_mw": 1.87,
+      "modis_detections_within_15km_same_window": 0
+    }
+  },
+  "trend": {
+    "modis": {
+      "events": {
+        "theil_sen_slope_per_year": 22.541,
+        "ci95": [
+          -76.071,
+          123.667
+        ],
+        "kendall_tau": 0.06,
+        "p_value": 0.6943
+      },
+      "frp": {
+        "theil_sen_slope_per_year": 2046.638,
+        "ci95": [
+          -3320.55,
+          11529.062
+        ],
+        "kendall_tau": 0.087,
+        "p_value": 0.5631
+      },
+      "start": {
+        "theil_sen_slope_per_year": -2.679,
+        "ci95": [
+          -5.3,
+          -0.947
+        ],
+        "kendall_tau": -0.446,
+        "p_value": 0.0019
+      },
+      "end": {
+        "theil_sen_slope_per_year": 1.46,
+        "ci95": [
+          0.667,
+          2.0
+        ],
+        "kendall_tau": 0.563,
+        "p_value": 0.0001
+      },
+      "length": {
+        "theil_sen_slope_per_year": 4.75,
+        "ci95": [
+          2.182,
+          6.45
+        ],
+        "kendall_tau": 0.571,
+        "p_value": 0.0001
+      }
+    },
+    "snpp": {
+      "events": {
+        "theil_sen_slope_per_year": -299.0,
+        "ci95": [
+          -1234.0,
+          464.083
+        ],
+        "kendall_tau": -0.165,
+        "p_value": 0.4506
+      },
+      "frp": {
+        "theil_sen_slope_per_year": 524.48,
+        "ci95": [
+          -20683.882,
+          13327.809
+        ],
+        "kendall_tau": 0.033,
+        "p_value": 0.9145
+      },
+      "start": {
+        "theil_sen_slope_per_year": -6.364,
+        "ci95": [
+          -12.0,
+          0.455
+        ],
+        "kendall_tau": -0.363,
+        "p_value": 0.0795
+      },
+      "end": {
+        "theil_sen_slope_per_year": 2.0,
+        "ci95": [
+          1.0,
+          3.889
+        ],
+        "kendall_tau": 0.552,
+        "p_value": 0.0061
+      },
+      "length": {
+        "theil_sen_slope_per_year": 7.111,
+        "ci95": [
+          1.75,
+          14.429
+        ],
+        "kendall_tau": 0.495,
+        "p_value": 0.0138
+      }
+    }
+  },
+  "trend_significant": [
+    [
+      "modis",
+      "start"
+    ],
+    [
+      "modis",
+      "end"
+    ],
+    [
+      "modis",
+      "length"
+    ],
+    [
+      "snpp",
+      "end"
+    ],
+    [
+      "snpp",
+      "length"
+    ]
+  ],
+  "insight_sentence": "The fire season (10-90% of events) lengthened in both independent records: MODIS +4.8 d/yr (p=0.000), VIIRS S-NPP +7.1 d/yr (p=0.014); no significant trend in total FRP.",
+  "season_table_modis": [
+    {
+      "year": 2001,
+      "events": 3301,
+      "frp": 140283.40000000002,
+      "start": 152,
+      "end": 294,
+      "length": 142
+    },
+    {
+      "year": 2002,
+      "events": 4324,
+      "frp": 191961.5,
+      "start": 164,
+      "end": 303,
+      "length": 139
+    },
+    {
+      "year": 2003,
+      "events": 4739,
+      "frp": 216271.0,
+      "start": 149,
+      "end": 309,
+      "length": 160
+    },
+    {
+      "year": 2004,
+      "events": 5025,
+      "frp": 185320.4,
+      "start": 149,
+      "end": 307,
+      "length": 158
+    },
+    {
+      "year": 2005,
+      "events": 5299,
+      "frp": 209183.90000000002,
+      "start": 148,
+      "end": 303,
+      "length": 155
+    },
+    {
+      "year": 2006,
+      "events": 5712,
+      "frp": 290029.69999999995,
+      "start": 154,
+      "end": 319,
+      "length": 165
+    },
+    {
+      "year": 2007,
+      "events": 5304,
+      "frp": 287560.1,
+      "start": 139,
+      "end": 292,
+      "length": 153
+    },
+    {
+      "year": 2008,
+      "events": 3656,
+      "frp": 198723.6,
+      "start": 135,
+      "end": 309,
+      "length": 174
+    },
+    {
+      "year": 2009,
+      "events": 10720,
+      "frp": 658577.2,
+      "start": 169,
+      "end": 295,
+      "length": 126
+    },
+    {
+      "year": 2010,
+      "events": 8137,
+      "frp": 388332.30000000005,
+      "start": 145,
+      "end": 311,
+      "length": 166
+    },
+    {
+      "year": 2011,
+      "events": 10520,
+      "frp": 553816.2999999999,
+      "start": 176,
+      "end": 313,
+      "length": 137
+    },
+    {
+      "year": 2012,
+      "events": 4290,
+      "frp": 195139.90000000002,
+      "start": 85,
+      "end": 289,
+      "length": 204
+    },
+    {
+      "year": 2013,
+      "events": 6833,
+      "frp": 322772.4,
+      "start": 159,
+      "end": 310,
+      "length": 151
+    },
+    {
+      "year": 2014,
+      "events": 4205,
+      "frp": 175914.7,
+      "start": 74,
+      "end": 295,
+      "length": 221
+    },
+    {
+      "year": 2015,
+      "events": 10072,
+      "frp": 561321.4,
+      "start": 167,
+      "end": 326,
+      "length": 159
+    },
+    {
+      "year": 2016,
+      "events": 8088,
+      "frp": 386652.30000000005,
+      "start": 160,
+      "end": 325,
+      "length": 165
+    },
+    {
+      "year": 2017,
+      "events": 5911,
+      "frp": 261783.0,
+      "start": 116,
+      "end": 329,
+      "length": 213
+    },
+    {
+      "year": 2018,
+      "events": 4598,
+      "frp": 185863.5,
+      "start": 134,
+      "end": 311,
+      "length": 177
+    },
+    {
+      "year": 2019,
+      "events": 5114,
+      "frp": 167260.4,
+      "start": 119,
+      "end": 325,
+      "length": 206
+    },
+    {
+      "year": 2020,
+      "events": 5140,
+      "frp": 225327.6,
+      "start": 134,
+      "end": 328,
+      "length": 194
+    },
+    {
+      "year": 2021,
+      "events": 4239,
+      "frp": 588910.5000000001,
+      "start": 46,
+      "end": 328,
+      "length": 282
+    },
+    {
+      "year": 2022,
+      "events": 3519,
+      "frp": 123782.70000000001,
+      "start": 96,
+      "end": 344,
+      "length": 248
+    },
+    {
+      "year": 2023,
+      "events": 5709,
+      "frp": 177114.1,
+      "start": 26,
+      "end": 335,
+      "length": 309
+    },
+    {
+      "year": 2024,
+      "events": 7100,
+      "frp": 302401.0,
+      "start": 135,
+      "end": 314,
+      "length": 179
+    },
+    {
+      "year": 2025,
+      "events": 4837,
+      "frp": 427430.69999999995,
+      "start": 45,
+      "end": 329,
+      "length": 284
+    }
+  ],
+  "check_2021": {
+    "events": [
+      {
+        "week": 6,
+        "value": 431,
+        "mean": 94.77,
+        "z": 5.22
+      },
+      {
+        "week": 19,
+        "value": 255,
+        "mean": 133.54,
+        "z": 2.41
+      },
+      {
+        "week": 45,
+        "value": 1819,
+        "mean": 856.62,
+        "z": 2.01
+      }
+    ],
+    "frp_mw": [
+      {
+        "week": 30,
+        "value": 601789.6,
+        "mean": 15406.54,
+        "z": 68.07
+      },
+      {
+        "week": 31,
+        "value": 259528.9,
+        "mean": 19148.59,
+        "z": 19.04
+      },
+      {
+        "week": 6,
+        "value": 3407.0,
+        "mean": 794.58,
+        "z": 4.9
+      }
+    ]
+  }
+}
