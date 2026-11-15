@@ -50,12 +50,32 @@ const regionName = () => S.region === "rect" ? "the drawn area" : S.region === "
 
 // ---------------- tooltip ----------------
 const tip = $("tip");
-function showTip(ev, html) { tip.innerHTML = html; tip.hidden = false; moveTip(ev); }
+// Touch: emulated mouse events open tips but never send mouseleave, and .tip is position:fixed, so it would
+// hang on screen. A second tap on the same element, a tap elsewhere, or any scroll closes it.
+let tipTarget = null, tipBlockUntil = 0;
+// calendar cells are redrawn after a tap, so compare them by week rather than by element
+const tipKey = el => el && el.dataset && el.dataset.w ? `w${el.dataset.y}/${el.dataset.w}` : el;
+function showTip(ev, html) { if (Date.now() < tipBlockUntil) return;
+  tip.innerHTML = html; tip.hidden = false; tipTarget = ev.target; moveTip(ev); }
 function moveTip(ev) { const w = tip.offsetWidth, h = tip.offsetHeight;
   let x = ev.clientX + 14, y = ev.clientY + 14;
   if (x + w > innerWidth - 8) x = ev.clientX - w - 14; if (y + h > innerHeight - 8) y = ev.clientY - h - 14;
   tip.style.left = Math.max(4, x) + "px"; tip.style.top = Math.max(4, y) + "px"; }
-const hideTip = () => { tip.hidden = true; };
+const hideTip = () => { tip.hidden = true; tipTarget = null; };
+function closeMapTips() { // Leaflet tooltips (map circles, provinces), only when one is on screen
+  if (typeof map !== "undefined" && document.querySelector(".leaflet-tooltip"))
+    map.eachLayer(l => { if (l.closeTooltip) l.closeTooltip(); }); }
+document.addEventListener("touchstart", e => {
+  if (!tip.hidden) {
+    const second = tipKey(e.target) === tipKey(tipTarget);
+    hideTip(); // a tap elsewhere closes it (and may open that element's own tip)
+    if (second) tipBlockUntil = Date.now() + 700; // second tap: swallow this tap's emulated mouse events
+  }
+  if (!(e.target.closest && e.target.closest("#map"))) closeMapTips();
+}, { capture: true, passive: true });
+// page scroll (wheel, keys, momentum) closes too; touch scrolls already closed it at touchstart. Not capture:
+// inner containers scroll programmatically when the calendar redraws after a tap.
+addEventListener("scroll", () => { if (!tip.hidden) hideTip(); closeMapTips(); }, { passive: true });
 function hover(el, html) { el.addEventListener("mouseenter", e => showTip(e, typeof html === "function" ? html() : html));
   el.addEventListener("mousemove", moveTip); el.addEventListener("mouseleave", hideTip); }
 
@@ -376,6 +396,11 @@ function newsLine(id) {
   const n = NEWS[id]; if (!n) return "";
   return `<p class="news"><span class="mono kicker">Reported in the news</span> ${escH(n.place)}: <a href="${escH(n.url)}" target="_blank" rel="noopener">${escH(n.source)}</a>${n.reported_cause ? ` <span class="tag">reported cause: ${escH(n.reported_cause)}</span>` : ""}</p>`;
 }
+const DETAIL0 = $("detail").innerHTML; // the empty-state text, restored by the close button
+$("detail").addEventListener("click", e => {
+  if (!e.target.closest(".detail-x")) return;
+  S.sel = null; hideTip(); $("detail").innerHTML = DETAIL0; renderMap();
+});
 function renderDetail(ev) {
   const both = ev.nM > 0 && ev.nV > 0, passes = ev.tl.length, doubt = 1 - ev.base;
   const bCross = both ? W_CROSS * doubt : 0, bRep = passes >= 2 ? W_REPEAT * doubt : 0;
@@ -386,7 +411,7 @@ function renderDetail(ev) {
   const trustWhy = both ? "confirmed by two satellites" : ev.agree === "viirs_only" ? "seen by VIIRS only" : "seen by MODIS only";
   const big = ev.maxFrp >= 1000 ? " It was one of the most intense fires in the record." : "";
   const pct = Math.round(100 * ev.conf);
-  $("detail").innerHTML = `<p class="mono kicker">Fire record · <span style="color:${COL[ev.agree]}">${AGREE_LABEL[ev.agree]}</span></p>
+  $("detail").innerHTML = `<button class="detail-x" type="button" aria-label="Close fire record">×</button><p class="mono kicker">Fire record ·<span style="color:${COL[ev.agree]}">${AGREE_LABEL[ev.agree]}</span></p>
   <h3>${ev.region ? S.meta.regions[ev.region] : "Border area"}, ${dayTxt(ev.d0)}</h3>
   <p class="summary">This fire burned in ${prov} ${span}. ${who}.${big}</p>
   <p class="trust">Trust Score: <b>${pct}%</b> — ${trustWhy}</p><div class="meter"><span style="width:${pct}%"></span></div>

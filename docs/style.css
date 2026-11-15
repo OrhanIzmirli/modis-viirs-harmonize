@@ -131,6 +131,9 @@ body.cb { --unusual: #1a1816; --unusual-strong: #000; }
 #map { height: 540px; border: 1px solid var(--ink); background: #e9e5de; }
 .side { border-top: 1px solid var(--ink); padding-top: 10px; max-height: 660px; overflow: auto; }
 .side h3 { font-size: 26px; margin: 4px 0 10px; }
+.detail-x { display: none; float: right; width: 44px; height: 44px; margin: -6px -6px 0 8px; border: 1px solid var(--rule);
+  border-radius: 2px; background: var(--paper); color: var(--ink); font: 26px/1 var(--sans); cursor: pointer; }
+@media (max-width: 960px) { .detail-x { display: block; } }
 .summary { font-family: var(--serif); font-size: 19px; line-height: 1.5; margin: 0 0 16px; }
 .meter { height: 6px; background: var(--c0); margin: 4px 0 4px; }
 .meter span { display: block; height: 100%; background: var(--accent); }
