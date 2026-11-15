@@ -36,8 +36,9 @@ def main():
         "day": a.day, "name": a.name, "bbox": [w, s, e, n],
         "detections": [[round(r.lat, 4), round(r.lon, 4), 0 if r.sensor == "MODIS" else 1]
                        for r in box.itertuples()],
-        "events": [[round(r.lat, 4), round(r.lon, 4), r.agree, round(float(r.frp), 1), int(r.n), k]
-                   for k, r in ev.iterrows()],
+        # [lat, lon, agreement, total FRP, detections over the whole event, event id, detections on this day]
+        "events": [[round(r.lat, 4), round(r.lon, 4), r.agree, round(float(r.frp), 1), int(r.n), k,
+                    int((box["event_id"] == k).sum())] for k, r in ev.iterrows()],
         "n_modis": int((box["sensor"] == "MODIS").sum()), "n_viirs": int((box["sensor"] == "VIIRS").sum()),
     }
     (ROOT / "docs" / "data" / "story.json").write_text(json.dumps(out, separators=(",", ":")), encoding="utf-8")

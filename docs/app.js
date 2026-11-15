@@ -11,10 +11,14 @@ const METRIC = { f: { name: "fire energy", unit: "MW", title: "Fire energy" },
 const AGREE = ["both", "modis_only", "viirs_only"];
 const AGREE_LABEL = { both: "Seen by both satellites", modis_only: "MODIS only", viirs_only: "VIIRS only" };
 const SATS = ["Terra", "Aqua", "S-NPP", "NOAA-20", "NOAA-21"];
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const COL = { both: css("--both"), modis_only: css("--modis"), viirs_only: css("--viirs"),
+const css = n => getComputedStyle(document.body).getPropertyValue(n).trim();
+let COL = { both: css("--both"), modis_only: css("--modis"), viirs_only: css("--viirs"),
               modis: css("--modis"), viirs: css("--viirs"), harmonized: css("--both") };
-const RAMP = ["--c0", "--c1", "--c2", "--c3", "--c4", "--c5"].map(css);
+let RAMP = ["--c0", "--c1", "--c2", "--c3", "--c4", "--c5"].map(css);
+function readColors() {
+  COL = { both: css("--both"), modis_only: css("--modis"), viirs_only: css("--viirs"), modis: css("--modis"), viirs: css("--viirs"), harmonized: css("--both") };
+  RAMP = ["--c0", "--c1", "--c2", "--c3", "--c4", "--c5"].map(css);
+}
 const Z_THRESH = 1.5, Z_STRONG = 5, MIN_VALUE = { e: 3, n: 3, f: 100 }, RISK_Q = 0.85;
 const STALE_HALF_LIFE_H = 24, W_CROSS = 0.30, W_REPEAT = 0.10;
 
@@ -250,7 +254,8 @@ function renderNormal() {
   const [d0, d1] = weekRange(now.getFullYear(), w);
   const label = `${dayTxt(d0, false)}–${dayTxt(d1, false)}`;
   const where = S.region === "TR" ? "Across Türkiye" : S.region === "rect" ? "In the drawn area" : `In ${S.meta.regions[S.region]}`;
-  if (!vals.length || mean <= 0) { $("normalTxt").textContent = `${where}, the week of ${label} has had no recorded fire activity in ${years[0]}–${years[years.length - 1]}.`; return; }
+  if (!vals.length || !(mean > 0)) { $("normalBox").hidden = true; return; }
+  $("normalBox").hidden = false;
   $("normalTxt").innerHTML = `${where}, this week (${label}) has been calm — below its long-term average — in <b>${calm} of the last ${years.length}</b> years. The busiest was ${top.y}, at ${ratioTxt(top.x, mean)} the average.`;
 }
 
@@ -433,6 +438,9 @@ async function init() {
   document.querySelectorAll("#modeSeg button").forEach(b => b.addEventListener("click", () => { S.mode = b.dataset.mode; renderAll(); }));
   document.querySelectorAll("#metricSeg button").forEach(b => b.addEventListener("click", () => { S.metric = b.dataset.metric; renderAll(); }));
   provLayer.addData(await getJSON("data/provinces.geojson"));
+  const cb = $("cbMode"); try { cb.checked = localStorage.getItem("almanac-cb") === "1"; } catch (e) {}
+  const applyCb = () => { document.body.classList.toggle("cb", cb.checked); readColors(); try { localStorage.setItem("almanac-cb", cb.checked ? "1" : "0"); } catch (e) {} };
+  applyCb(); cb.addEventListener("change", () => { applyCb(); renderAll(); });
   const q = new URLSearchParams(location.search);
   if (q.get("region") && S.meta.regions[q.get("region")]) S.region = q.get("region");
   if (q.get("mode") && MODES.includes(q.get("mode"))) S.mode = q.get("mode");

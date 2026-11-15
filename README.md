@@ -1,8 +1,8 @@
-# When does Türkiye burn? — MODIS + VIIRS hot spot harmonization
+# The Fire Almanac of Türkiye — MODIS + VIIRS hot spot harmonization
 
 **NASA Space Apps Challenge 2026 · Harmonization of MODIS and VIIRS Hot Spots**
 
-Live app: **https://orhanizmirli.github.io/modis-viirs-harmonize/**
+Live app: **https://orhanizmirli.github.io/modis-viirs-harmonize/** — *When does Türkiye burn?*
 
 MODIS (1 km, since 2000) and VIIRS (375 m, since 2012) both map active fires, but they
 see the same fire differently: different pixel sizes, overpass times, confidence scales
@@ -48,12 +48,24 @@ A single scrolling page, written for people rather than analysts:
    and after merging. 1,540 raw detections become 3 fire events.
 3. **The live map**: the fires of the selected week, coloured by *seen by both
    satellites / MODIS only / VIIRS only*. Click a fire to get a plain-language story
-   ("This fire burned in Antalya province for 10 days… Both satellites confirmed it;
-   confidence 77%"), an overpass timeline (which satellite saw it, when) and collapsible
+   ("This fire burned in Antalya province for 10 days… Both satellites confirmed it"),
+   its **Trust Score** ("Trust Score: 77% — confirmed by two satellites"; the fused
+   confidence below, shown as a percentage), an overpass timeline (which satellite saw it, when) and collapsible
    technical details (fused-confidence terms, detections, FRP).
-4. **Why it matters**: for a selected critical week, a short sourced note on the fire
+4. **Is this week normal?** Above the calendar, one sentence computed from the data for the
+   current calendar week and the selected region, e.g. *"In Antalya, this week has been calm —
+   below its long-term average — in 7 of the last 14 years."* It is hidden when it cannot be
+   computed.
+5. **Who is this for?** and **Download the data** (events GeoJSON, daily calendar CSV, all
+   detections CSV, with field descriptions).
+6. **Why it matters**: for a selected critical week, a short sourced note on the fire
    season, prevention and the stubble-burning ban, plus "Did you know?" cards taken from
    the FireWatch TR verified facts pool.
+
+**Accessibility.** A *colorblind-safe colors* switch above the calendar swaps the heatmap to
+a viridis-like ramp and the sensor colors to the Okabe–Ito palette (the default palette was
+also checked for colour-vision deficiency separation). Every calendar cell, bar and map circle
+has a numeric tooltip, and figures carry text alternatives (`aria-label`).
 
 Everything is static (vanilla JS + Leaflet, no build step, no server). Data lives in
 `docs/data/` as JSON. `src/make_story.py` builds the small `story.json` used by section 2
@@ -135,6 +147,8 @@ c         = clip(c, 0, 1)
 c(t)      = c · 0.5^((t − last_seen) / 24 h)          (staleness, shown "as of" a day)
 ```
 
+In the app, `c` is shown as the event's **Trust Score** (0–100%).
+
 A second sensor removes 30% of the remaining doubt, and repeated observation removes
 10% more. Confirmation can only raise confidence. When an event is viewed on a later
 day, its confidence halves every 24 h without a new detection.
@@ -154,6 +168,7 @@ year does not hide itself in its own mean). Baseline: 2001–2025 for MODIS only
 | `output/events.geojson(.gz)` | harmonized fire events |
 | `output/calendar_daily.json` | region × day calendar for all three modes, plus unusual weeks |
 | `output/detections_harmonized.csv(.gz)` | every detection in the common schema with its event id |
+| `output/calendar_daily.csv.gz` | the same calendar as a flat CSV (`src/export_csv.py`) |
 | `output/summary.json`, `output/validation.json` | counts and validation numbers |
 | `docs/data/` | the same data cut into small static files for the web app |
 
@@ -173,6 +188,11 @@ All numbers come from `output/validation.json` (written by `src/validate.py`).
 | `figures/insight.png` | Season start/end/length and total FRP per year, single-sensor records, Theil–Sen + Kendall | Season length +4.8 d/yr (MODIS, p < 0.001) and +7.1 d/yr (S-NPP, p = 0.014), mostly from later season ends; season start earlier for MODIS (p = 0.002) but not significant for S-NPP (p = 0.08); **no significant trend in total FRP** (p = 0.56 / 0.91) |
 | `figures/calendar_2021_check.png` | Türkiye 2021 weekly totals vs leave-one-out mean | FRP weeks 30–31: z = 68 and 19; event counts: not anomalous (see above) |
 
+**Slide figures** (`src/present_figures.py`, 300 dpi, paper background):
+`figures/slide_2021_unusual.png` (summer 2021 flagged in the calendar),
+`figures/slide_before_after.png` (29 July 2021, Manavgat: 1,540 detections → 3 events),
+`figures/slide_frp_scatter.png` (r = 0.67) and `figures/slide_match_rates.png`.
+
 The season-length trend counts all vegetation fires, including agricultural burning;
 it does not by itself say why seasons got longer.
 
@@ -187,6 +207,8 @@ python src/fetch_archive.py       # alternative: FIRMS yearly country files, no 
 python src/pipeline.py --raw data/raw          # or --raw data/raw_archive
 python src/validate.py            # figures/*.png and output/validation.json
 python src/make_story.py           # data for the "two satellites" section
+python src/export_csv.py           # calendar CSV for download
+python src/present_figures.py      # slide figures
 pytest -q
 python -m http.server -d docs 8000             # open http://localhost:8000
 ```

@@ -183,3 +183,11 @@ details.tech summary { cursor: pointer; font: 12.5px var(--mono); text-transform
 .who .kicker { margin: 0; color: var(--accent); }
 .trust { font-family: var(--serif); font-size: 20px; margin: 0 0 4px; }
 .trust b { font-family: var(--mono); font-weight: 500; color: var(--accent); }
+
+.cbl { font: 13.5px var(--sans); color: var(--ink2); display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.dl p { margin: 0 0 16px; color: var(--ink2); font-size: 16px; }
+.dl a { font-family: var(--mono); font-size: 15px; font-weight: 500; }
+.dl .mono { font-size: 13px; }
+/* colorblind-safe mode: viridis-like sequential ramp + Okabe-Ito categories */
+body.cb { --c0: #f0ede6; --c1: #d8e6a8; --c2: #7ccf6b; --c3: #21a585; --c4: #2c728e; --c5: #3b2a6b;
+  --both: #d55e00; --modis: #009e73; --viirs: #0072b2; }
