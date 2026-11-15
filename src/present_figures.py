@@ -169,13 +169,6 @@ def fig_match():
     finish(fig, "slide_match_rates.png", "2012-2025; match = same event rule (footprint distance + time window)")
 
 
-if __name__ == "__main__":
-    fig_2021()
-    fig_before_after()
-    print("frp", fig_frp())
-    fig_match()
-    fig_dedup()
-    og_cover()
 
 
 def fig_dedup():
@@ -230,3 +223,12 @@ def og_cover():
     fig.savefig(ROOT / "docs" / "og-icon.png", dpi=100, facecolor=PAPER)
     plt.close(fig)
     print("wrote docs/og.png, docs/og-icon.png")
+
+
+if __name__ == "__main__":
+    fig_2021()
+    fig_before_after()
+    print("frp", fig_frp())
+    fig_match()
+    fig_dedup()
+    og_cover()

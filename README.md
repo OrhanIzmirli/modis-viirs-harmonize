@@ -15,22 +15,25 @@ archives into **one harmonized set of fire events** and shows it as a
 
 ## Results at a glance
 
+Numbers are for detections and events inside Türkiye's 81 provinces (the download box also
+covers parts of neighbouring countries; those events are kept in the files but not counted here).
+
 | | |
 |---|---|
-| Raw FIRMS rows (Türkiye, 2001–2025) | 1,181,845 |
-| Vegetation-fire detections after cleaning | **915,940** (243,603 MODIS · 672,337 VIIRS) |
-| Harmonized fire events | **432,881** (2.1 detections per event) |
-| Seen by both sensors / MODIS only / VIIRS only | 34,587 (8.0%) / 111,398 (25.7%) / 286,896 (66.3%) |
-| Most unusual week, Türkiye, fire energy | **26 Jul – 1 Aug 2021**: 601,790 MW, 39× the 2012–2025 mean for that week (z = 68); next: 2–8 Aug 2021 (z = 19) |
-| Fire-season length trend | **+4.8 days/yr** (MODIS, 2001–2025, p < 0.001) and **+7.1 days/yr** (VIIRS S-NPP, 2012–2025, p = 0.014); no significant trend in total FRP |
+| Raw FIRMS rows (Area API, Türkiye bounding box, 2001–2025) | 2,054,986 |
+| Vegetation-fire detections inside Türkiye | **988,698** (232,808 MODIS · 755,890 VIIRS) |
+| Harmonized fire events inside Türkiye | **448,364** (2.2 detections per event) |
+| Seen by both sensors / MODIS only / VIIRS only | 7.8% / 22.9% / 69.2% of events (8.7% of fire-days seen by both) |
+| Most unusual week, Türkiye, fire energy | **26 Jul – 1 Aug 2021**: 601,798 MW, 35× the 2012–2025 mean for that week (z = 54); next: 2–8 Aug 2021 (z = 17) |
+| Fire-season length trend | **+4.9 days/yr** (MODIS, 2001–2025, p < 0.001) and **+7.0 days/yr** (VIIRS S-NPP, 2012–2025, p = 0.014); no significant trend in total FRP |
 
 **The 2021 check.** Summer 2021 (Manavgat, Marmaris) is the strongest anomaly in the
 whole archive when activity is measured as fire energy. Nationally, however, it is
-**not** unusual in *event counts* (z ≈ −0.1 to −0.9): Türkiye has thousands of small
-agricultural fires every summer, and the harmonization correctly collapses each
-mega-fire into a single event. In Antalya and Muğla the weeks stand out in both
-metrics (event-count z = 7–43, FRP z = 200–790). This is why the calendar measures fire
-energy by default. See `figures/calendar_2021_check.png`.
+**not** unusual in *event counts* (z between −1.3 and −0.2 for weeks 29–31): Türkiye has
+thousands of small agricultural fires every summer, and the harmonization collapses each
+mega-fire into a single event. In Antalya and Muğla the weeks stand out in both metrics
+(event-count z = 5.6–33, FRP z = 200–714). This is why the calendar measures fire energy
+by default. See `figures/calendar_2021_check.png`.
 
 ## What the app does
 
@@ -38,7 +41,7 @@ A single scrolling page, written for people rather than analysts:
 
 1. **The calendar** (Figure 1): one row per year (2001–2025), one cell per week.
    Darker cells mean more fire. Weeks that were unusual for their time of year carry a thin
-   red outline; hovering shows e.g. *"Unusual activity: 39.1× the long-term average"*.
+   red outline; hovering shows e.g. *"Unusual activity: 34.9× the long-term average"*.
    On first load, the page draws attention to the summer-2021 weeks. Region: any of the
    81 provinces, Türkiye as a whole, or a rectangle drawn on the map. Measure: fire
    energy (FRP), active fires or new fires. Sensors: **both satellites (harmonized)**,
@@ -81,17 +84,18 @@ from the pipeline outputs.
 | MODIS Collection 6.1 active fires (MCD14ML, FIRMS `MODIS_SP`) | Terra + Aqua | 1 km at nadir | 2001–2025 |
 | VIIRS 375 m active fires (VNP14IMG, FIRMS `VIIRS_SNPP_SP`) | Suomi NPP | 375 m | 2012–2025 |
 | VIIRS 375 m active fires (VJ114IMG, FIRMS `VIIRS_NOAA20_SP`) | NOAA-20 | 375 m | 2018–2025 |
+| VIIRS 375 m active fires (VJ214IMG, FIRMS `VIIRS_NOAA21_SP`) | NOAA-21 | 375 m | 2023–2025 |
 
 Source: NASA FIRMS (Fire Information for Resource Management System),
 <https://firms.modaps.eosdis.nasa.gov/>. Standard-processing (science-quality) archive.
 
-**How the data was fetched.** `src/fetch_firms.py` uses the FIRMS **Area API**
-(Türkiye bounding box 25.6–44.9 E, 35.8–42.2 N, 5-day requests, every response cached in
-`data/raw/`). The FIRMS transaction limit (5,000 per 10 minutes, roughly 10 per request)
-makes the full 2001–2025 download slow, so the published results were built from the
-FIRMS **yearly country archive** for Türkiye (`src/fetch_archive.py`). That archive holds the
-same standard-processing MODIS C6.1 and VIIRS 375 m records, clipped to the national border.
-Both loaders feed the same pipeline (`--raw data/raw` or `--raw data/raw_archive`).
+**How the data was fetched.** `src/fetch_firms.py` downloaded the four standard-processing
+sources (`MODIS_SP`, `VIIRS_SNPP_SP`, `VIIRS_NOAA20_SP`, `VIIRS_NOAA21_SP`) through the FIRMS
+**Area API** for the Türkiye bounding box (25.6–44.9 E, 35.8–42.2 N), 2001–2025, in 3,621 five-day
+requests, all cached in `data/raw/`. FIRMS allows 5,000 transactions per 10 minutes and a
+five-day request costs about ten, so the script pauses whenever the budget is spent (FIRMS
+then answers "Invalid MAP_KEY"). NOAA-21 data start in March 2023. `src/fetch_archive.py`
+(FIRMS yearly country files, no key) is kept as a fast alternative input.
 
 ## Method
 
@@ -185,17 +189,17 @@ All numbers come from `output/validation.json` (written by `src/validate.py`).
 
 | Figure | What it shows | Result |
 |---|---|---|
-| `figures/match_rates.png` | Share of each sensor's detections matched by the other sensor (2012+), day vs night, for the 12 h event rule and for near-simultaneous (≤ 1 h) passes | MODIS→VIIRS: **52% day / 57% night** (≤ 12 h), 38% / 20% (≤ 1 h). VIIRS→MODIS: 26% day / 33% night (≤ 12 h): most VIIRS detections are fires too small for MODIS |
-| `figures/frp_scatter.png` | FRP of Aqua vs S-NPP/NOAA-20 for the same event, passes ≤ 30 min apart | n = 19,434 pairs; **Pearson r (log) = 0.67**, Spearman ρ = 0.61, log-log slope 0.75; median VIIRS/MODIS ratio 0.79 (day r = 0.66, night r = 0.74) |
-| `figures/dedup.png` | Raw detections vs harmonized events per year | 915,940 → 432,881 (**2.1×**); the ratio rises after 2012 and 2018 as VIIRS satellites add repeat looks |
-| `figures/small_fire_example.png` | FRP distribution of VIIRS-only vs both-sensor events, and one small fire missed by MODIS | VIIRS-only events: median max FRP **3.7 MW** vs 19.0 MW for both-sensor events. Example H385243 (Muş, 25 Aug 2024): 6 VIIRS detections on 4 passes, max 1.9 MW, **no MODIS detection within 15 km** |
-| `figures/insight.png` | Season start/end/length and total FRP per year, single-sensor records, Theil–Sen + Kendall | Season length +4.8 d/yr (MODIS, p < 0.001) and +7.1 d/yr (S-NPP, p = 0.014), mostly from later season ends; season start earlier for MODIS (p = 0.002) but not significant for S-NPP (p = 0.08); **no significant trend in total FRP** (p = 0.56 / 0.91) |
-| `figures/calendar_2021_check.png` | Türkiye 2021 weekly totals vs leave-one-out mean | FRP weeks 30–31: z = 68 and 19; event counts: not anomalous (see above) |
+| `figures/match_rates.png`, `figures/slide_match_rates.png` | Share of each sensor's detections matched by the other sensor (2012+), day vs night, for the 12 h event rule and for near-simultaneous (≤ 1 h) passes | MODIS→VIIRS: **56% day / 62% night** (≤ 12 h), 41% / 22% (≤ 1 h). VIIRS→MODIS: 27% day / 31% night (≤ 12 h): most VIIRS detections are fires too small for MODIS |
+| `figures/frp_scatter.png`, `figures/slide_frp_scatter.png` | FRP of Aqua vs S-NPP/NOAA-20 for the same event, passes ≤ 30 min apart | n = 25,171 pairs; **Pearson r (log) = 0.69**, Spearman ρ = 0.63, log-log slope 0.78; median VIIRS/MODIS ratio 0.81 (day r = 0.69, night r = 0.74) |
+| `figures/dedup.png`, `figures/slide_dedup.png` | Raw detections vs harmonized events per year (whole download box) | 1,423,446 → 598,750 (**2.4×**); the ratio rises after 2012, 2018 and 2023 as VIIRS satellites add repeat looks |
+| `figures/small_fire_example.png` | FRP distribution of VIIRS-only vs both-sensor events, and one small fire missed by MODIS | VIIRS-only events: median max FRP **3.8 MW** vs 20.2 MW for both-sensor events. Example H478349 (Ankara, 24–25 Oct 2023): 4 VIIRS detections on 4 passes, max 0.9 MW, **no MODIS detection within 15 km** |
+| `figures/insight.png` | Season start/end/length and total FRP per year, single-sensor records, Theil–Sen + Kendall | Season length +4.9 d/yr (MODIS, p < 0.001) and +7.0 d/yr (S-NPP, p = 0.014), mostly from later season ends; season start earlier for MODIS (p = 0.003) but not significant for S-NPP (p = 0.08); **no significant trend in total FRP** (p = 0.50 / 0.91) |
+| `figures/calendar_2021_check.png`, `figures/slide_2021_unusual.png` | Türkiye 2021 weekly totals vs leave-one-out mean | FRP weeks 30–31: z = 54 and 17; event counts: not anomalous (see above) |
 
 **Slide figures** (`src/present_figures.py`, 300 dpi, paper background):
 `figures/slide_2021_unusual.png` (summer 2021 flagged in the calendar),
 `figures/slide_before_after.png` (29 July 2021, Manavgat: 1,540 detections → 3 events),
-`figures/slide_frp_scatter.png` (r = 0.67), `figures/slide_match_rates.png` and
+`figures/slide_frp_scatter.png` (r = 0.69), `figures/slide_match_rates.png` and
 `figures/slide_dedup.png` (raw detections vs fire events per year).
 
 The season-length trend counts all vegetation fires, including agricultural burning;
@@ -227,7 +231,7 @@ the transaction limit.
 * **Detections are not fire reports.** Clouds, thick smoke and canopy hide fires; a fire
   can start and end between overpasses; small or cool fires go undetected (FIRMS FAQ).
 * **The sensor record is not homogeneous.** VIIRS starts in 2012, NOAA-20 adds passes
-  from 2018 (NOAA-21 from 2023 in the Area API data), so VIIRS-based and harmonized
+  from 2018 and NOAA-21 from 2023, so VIIRS-based and harmonized
   *counts* rise partly because more satellites look. Anomalies are computed against the
   same mode's own baseline, the harmonized calendar marks the pre-2012 *MODIS-only era*,
   and the trend analysis uses single-sensor records only. Terra and Aqua have been

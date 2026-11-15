@@ -1,46 +1,51 @@
 {
-  "raw_rows": 1181845,
-  "clean_detections": 915940,
+  "raw_rows": 2054986,
+  "clean_detections": 1423446,
   "harmonized": {
-    "detections": 915940,
-    "events": 432881,
-    "events_tr": 430815
+    "detections": 1423446,
+    "events": 598750,
+    "events_tr": 448364
   },
   "modis": {
-    "detections": 243603,
-    "events": 147054,
-    "events_tr": 146367
+    "detections": 290193,
+    "events": 171602,
+    "events_tr": 139033
   },
   "viirs": {
-    "detections": 672337,
-    "events": 328934,
-    "events_tr": 327243
+    "detections": 1133253,
+    "events": 484117,
+    "events_tr": 353165
   },
   "agreement": {
-    "viirs_only": 286896,
-    "modis_only": 111398,
-    "both": 34587
+    "viirs_only": 428904,
+    "modis_only": 123997,
+    "both": 45849
   },
   "satellites": {
     "Aqua": {
       "first": "2002-07-04",
       "last": "2025-12-29",
-      "detections": 116585
+      "detections": 138681
     },
     "NOAA-20": {
       "first": "2018-04-01",
       "last": "2025-12-31",
-      "detections": 226761
+      "detections": 352432
+    },
+    "NOAA-21": {
+      "first": "2023-03-01",
+      "last": "2025-12-30",
+      "detections": 124367
     },
     "S-NPP": {
       "first": "2012-01-20",
       "last": "2025-12-31",
-      "detections": 445576
+      "detections": 656454
     },
     "Terra": {
-      "first": "2001-01-09",
+      "first": "2001-01-07",
       "last": "2025-12-23",
-      "detections": 127018
+      "detections": 151512
     }
   }
 }
