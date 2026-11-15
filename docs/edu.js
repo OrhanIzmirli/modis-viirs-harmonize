@@ -16,14 +16,14 @@ function showFacts() {
   const box = document.getElementById("facts"), pick = [];
   for (let i = 0; i < 3; i++) pick.push(FACTS[(factPos + i) % FACTS.length]);
   box.innerHTML = pick.map(f => `<div class="fact"><p class="mono kicker">Did you know?</p><p>${esc(f.text)}</p>${cite(f)}</div>`).join("") +
-    `<a href="#" class="more" id="nextFact">Three more facts →</a>`;
+    `<a href="#" class="more" id="nextFact">Three more</a>`;
   document.getElementById("nextFact").addEventListener("click", e => { e.preventDefault(); factPos = (factPos + 3) % FACTS.length; showFacts(); });
 }
 
 function update(S) {
   const box = document.getElementById("why");
   if (!EDU || S.week == null || !S.wk) {
-    box.innerHTML = `<p class="muted">Select an outlined week in Figure 1 to read why that period matters.</p>`; return; }
+    box.innerHTML = `<p class="muted">Select an outlined week in Fig. 1 for notes on that period.</p>`; return; }
   const y = S.year, w = S.week, d = new Date(EPOCH + S.day * DAY), mo = d.getUTCMonth() + 1;
   const s = S.wk.W[y] && S.wk.W[y][w];
   const unusual = s && s.unusual, risky = S.wk.risky[w];

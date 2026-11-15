@@ -44,21 +44,24 @@ A single scrolling page, written for people rather than analysts:
    energy (FRP), active fires or new fires. Sensors: **both satellites (harmonized)**,
    MODIS only or VIIRS only, so the effect of harmonization is visible. Below it, a
    month-by-month chart and a week-by-week comparison of the three sensor views.
-2. **Two satellites, one truth**: the same day and area (29 July 2021, Manavgat) before
+2. **What two satellites saw**: the same day and area (29 July 2021, Manavgat) before
    and after merging. 1,540 raw detections become 3 fire events.
 3. **The live map**: the fires of the selected week, coloured by *seen by both
    satellites / MODIS only / VIIRS only*. Click a fire to get a plain-language story
-   ("This fire burned in Antalya province for 10 days… Both satellites confirmed it"),
+   ("This fire burned in Antalya province for 10 days… Both satellites confirmed it."),
    its **Trust Score** ("Trust Score: 77% — confirmed by two satellites"; the fused
    confidence below, shown as a percentage), an overpass timeline (which satellite saw it, when) and collapsible
    technical details (fused-confidence terms, detections, FRP).
-4. **Is this week normal?** Above the calendar, one sentence computed from the data for the
-   current calendar week and the selected region, e.g. *"In Antalya, this week has been calm —
-   below its long-term average — in 7 of the last 14 years."* It is hidden when it cannot be
+4. **Is this week normal?** Above the calendar, one sentence computed for the current
+   calendar week and the selected region. It counts the years in which that week stayed below
+   its long-term average, over the selected view's own baseline: 2012–2025 for the harmonized
+   and VIIRS views (VIIRS joined in 2012; earlier merged years are MODIS only and not
+   comparable), 2001–2025 for MODIS only. The wording follows the count: "usually calm" (≥ 60%
+   of years below average), "usually busy" (≤ 40%) or "mixed". It is hidden when it cannot be
    computed.
 5. **Who is this for?** and **Download the data** (events GeoJSON, daily calendar CSV, all
    detections CSV, with field descriptions).
-6. **Why it matters**: for a selected critical week, a short sourced note on the fire
+6. **Before the season**: for a selected critical week, a short sourced note on the fire
    season, prevention and the stubble-burning ban, plus "Did you know?" cards taken from
    the FireWatch TR verified facts pool.
 
@@ -168,6 +171,7 @@ year does not hide itself in its own mean). Baseline: 2001–2025 for MODIS only
 | `output/events.geojson(.gz)` | harmonized fire events |
 | `output/calendar_daily.json` | region × day calendar for all three modes, plus unusual weeks |
 | `output/detections_harmonized.csv(.gz)` | every detection in the common schema with its event id |
+| `docs/og.png` | social preview image (almanac cover), also from `src/present_figures.py` |
 | `output/calendar_daily.csv.gz` | the same calendar as a flat CSV (`src/export_csv.py`) |
 | `output/summary.json`, `output/validation.json` | counts and validation numbers |
 | `docs/data/` | the same data cut into small static files for the web app |
@@ -191,7 +195,8 @@ All numbers come from `output/validation.json` (written by `src/validate.py`).
 **Slide figures** (`src/present_figures.py`, 300 dpi, paper background):
 `figures/slide_2021_unusual.png` (summer 2021 flagged in the calendar),
 `figures/slide_before_after.png` (29 July 2021, Manavgat: 1,540 detections → 3 events),
-`figures/slide_frp_scatter.png` (r = 0.67) and `figures/slide_match_rates.png`.
+`figures/slide_frp_scatter.png` (r = 0.67), `figures/slide_match_rates.png` and
+`figures/slide_dedup.png` (raw detections vs fire events per year).
 
 The season-length trend counts all vegetation fires, including agricultural burning;
 it does not by itself say why seasons got longer.

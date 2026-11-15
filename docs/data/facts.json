@@ -1,107 +1,107 @@
 {
- "source": "FireWatch TR verified facts pool (assets/data/nature_facts.json, verification log FACTS-DOGRULAMA.md, all rows status: verified 2026-11-08). English text copied from the pool.",
+ "source": "FireWatch TR verified facts pool (assets/data/nature_facts.json, verification log FACTS-DOGRULAMA.md, all rows status: verified 2026-11-08). English text copied from the pool. Wording edited for tone; meaning and sources unchanged.",
  "facts": [
   {
    "id": "plants-001",
-   "text": "Turkish red pine has very thick bark. Thanks to it, fires that burn along the ground hurt the tree only a little.",
+   "text": "Turkish red pine has thick bark, so fires that burn along the ground do it little harm.",
    "source_name": "Orman Genel Müdürlüğü (OGM)",
    "source_url": "https://www.ogm.gov.tr/tr/yararli-bilgiler/haftanin-agaci/kizilcam",
    "season": "all"
   },
   {
    "id": "fire-003",
-   "text": "If you see even the smallest smoke in a forest or field, stay away and call 112 right away. Even a tiny bit of smoke is worth reporting!",
+   "text": "Smoke in a forest or field is worth reporting, however small. Keep your distance and call 112.",
    "source_name": "OGM (General Directorate of Forestry)",
    "source_url": "https://www.ogm.gov.tr/tr/haberler/hasat-mevsiminde-orman-yangini-alarmi",
    "season": "all"
   },
   {
    "id": "fire-011",
-   "text": "Around the Mediterranean, summer can last from June to October. In these long summers there is almost no rain!",
+   "text": "Around the Mediterranean the dry summer can run from June to October, with almost no rain.",
    "source_name": "FAO Unasylva No. 162",
    "source_url": "https://www.fao.org/4/t9500e/t9500e02.htm",
    "season": "summer"
   },
   {
    "id": "fire-013",
-   "text": "Fire usually moves faster uphill than downhill or on flat ground. So it can climb a mountain very quickly!",
+   "text": "Fire usually moves faster uphill than downhill or on flat ground.",
    "source_name": "US National Park Service",
    "source_url": "https://www.nps.gov/articles/wildland-fire-behavior.htm",
    "season": "all"
   },
   {
    "id": "fire-014",
-   "text": "Wind brings fresh oxygen to a fire and pushes it toward new plants. That is why wind is one of the most important things in a fire.",
+   "text": "Wind feeds a fire fresh oxygen and pushes it toward new fuel, which makes it one of the main drivers of fire behaviour.",
    "source_name": "US National Park Service",
    "source_url": "https://www.nps.gov/articles/wildland-fire-behavior.htm",
    "season": "all"
   },
   {
    "id": "fire-024",
-   "text": "Clouds, thick smoke or treetops can hide a fire from a satellite completely. If a satellite did not see a fire, that does not mean there is none!",
+   "text": "Clouds, thick smoke or tree canopy can hide a fire from a satellite. No detection does not mean no fire.",
    "source_name": "NASA Earthdata FIRMS FAQ",
    "source_url": "https://www.earthdata.nasa.gov/faq/firms-faq",
    "season": "all"
   },
   {
    "id": "fire-025",
-   "text": "A fire can start and end before a satellite looks again. That is why satellites never see some fires.",
+   "text": "A fire can start and end between two overpasses, and then no satellite records it.",
    "source_name": "NASA Earthdata FIRMS FAQ",
    "source_url": "https://www.earthdata.nasa.gov/faq/firms-faq",
    "season": "all"
   },
   {
    "id": "fire-026",
-   "text": "Some fires are too small or not hot enough for a satellite to notice. A satellite may miss them!",
+   "text": "Some fires are too small or not hot enough for a satellite to detect.",
    "source_name": "NASA Earthdata FIRMS FAQ",
    "source_url": "https://www.earthdata.nasa.gov/faq/firms-faq",
    "season": "all"
   },
   {
    "id": "fire-027",
-   "text": "A hot spot seen by a satellite is not always a forest fire. Sometimes it is a volcano or the flame of a gas well!",
+   "text": "A satellite hot spot is not always a vegetation fire; it can be a volcano or a gas flare.",
    "source_name": "NASA Earthdata FIRMS FAQ",
    "source_url": "https://www.earthdata.nasa.gov/faq/firms-faq",
    "season": "all"
   },
   {
    "id": "fire-028",
-   "text": "Satellite data reaches NASA's fire map within 3 hours of the satellite looking. So what you see on the map may be a few hours old!",
+   "text": "Satellite fire data reaches NASA's fire map within about three hours of the overpass, so the map can be a few hours behind.",
    "source_name": "NASA Earthdata FIRMS",
    "source_url": "https://www.earthdata.nasa.gov/data/tools/firms",
    "season": "all"
   },
   {
    "id": "fire-033",
-   "text": "NASA's Aqua satellite goes around the Earth in about 99 minutes. One whole trip in the time of a movie!",
+   "text": "Aqua orbits Earth in about 99 minutes.",
    "source_name": "NASA Earth Observatory",
    "source_url": "https://science.nasa.gov/earth/earth-observatory/catalog-of-earth-satellite-orbits",
    "season": "all"
   },
   {
    "id": "fire-044",
-   "text": "When the weather is hot, dry and windy, fires start, grow and spread more easily.",
+   "text": "Fires start, grow and spread more easily in hot, dry and windy weather.",
    "source_name": "NOAA National Severe Storms Laboratory",
    "source_url": "https://www.nssl.noaa.gov/education/students/wxfriendscards/txt/blaze.html",
    "season": "summer"
   },
   {
    "id": "fire-046",
-   "text": "Embers from a fire can fly for miles and start new fires. Even if a fire looks far away, listen to the warnings from officials!",
+   "text": "Embers can travel for kilometres and start new fires. A fire that looks distant can still reach you; follow official warnings.",
    "source_name": "NIST",
    "source_url": "https://www.nist.gov/el/fire-research-division-73300/wildland-urban-interface-fire-73305/hazard-mitigation-methodology-4",
    "season": "all"
   },
   {
    "id": "prevent-011",
-   "text": "Even sparks from harvesting machines can lead to forest fires at harvest time. That is why looking after those machines matters so much.",
+   "text": "At harvest time, sparks from harvesting machines can start fires. Machine maintenance reduces the risk.",
    "source_name": "OGM (General Directorate of Forestry)",
    "source_url": "https://www.ogm.gov.tr/tr/haberler/hasat-mevsiminde-orman-yangini-alarmi",
    "season": "summer"
   },
   {
    "id": "prevent-024",
-   "text": "Smoke from burning field stalks can make it hard to see on the road. It can even cause traffic accidents!",
+   "text": "Smoke from burning field stubble can reduce visibility on roads and has caused traffic accidents.",
    "source_name": "Şanlıurfa Provincial Directorate of Agriculture and Forestry",
    "source_url": "https://sanliurfa.tarimorman.gov.tr/Haber/9/aniz-yakmanin-zararlari",
    "season": "all"

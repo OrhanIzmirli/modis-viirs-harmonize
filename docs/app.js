@@ -1,4 +1,4 @@
-/* When does Türkiye burn? — static front-end (vanilla JS + Leaflet, no build step). */
+/* The Fire Almanac of Türkiye: static front-end (vanilla JS + Leaflet, no build step). */
 (() => {
 "use strict";
 
@@ -256,7 +256,15 @@ function renderNormal() {
   const where = S.region === "TR" ? "Across Türkiye" : S.region === "rect" ? "In the drawn area" : `In ${S.meta.regions[S.region]}`;
   if (!vals.length || !(mean > 0)) { $("normalBox").hidden = true; return; }
   $("normalBox").hidden = false;
-  $("normalTxt").innerHTML = `${where}, this week (${label}) has been calm — below its long-term average — in <b>${calm} of the last ${years.length}</b> years. The busiest was ${top.y}, at ${ratioTxt(top.x, mean)} the average.`;
+  // Basis: the selected view's own baseline years (harmonized and VIIRS views start in 2012,
+  // when VIIRS joined; before that the merged record is MODIS only and not comparable).
+  const since = S.mode === "modis" ? `Since ${years[0]}` : `Since VIIRS joined in ${years[0]}`;
+  const n = years.length, share = calm / n;
+  const where2 = where.replace(/^In /, "in ").replace(/^Across /, "across ");
+  const busiest = `The busiest was ${top.y}, at ${ratioTxt(top.x, mean)} the average.`;
+  if (share >= 0.6) $("normalTxt").innerHTML = `${since}, this week (${label}) has usually been calm ${where2}: below its long-term average in <b>${calm} of ${n}</b> years. ${busiest}`;
+  else if (share <= 0.4) $("normalTxt").innerHTML = `${since}, this week (${label}) has usually been busy ${where2}: above its long-term average in <b>${n - calm} of ${n}</b> years. ${busiest}`;
+  else $("normalTxt").innerHTML = `${since}, this week (${label}) has been mixed ${where2}: below its long-term average in <b>${calm} of ${n}</b> years and above it in ${n - calm}. ${busiest}`;
 }
 
 // ---------------- Figure 2: month by month ----------------
@@ -298,9 +306,9 @@ function renderCompare() {
   let nn = 0, b = 0, vo = 0; for (let d = y0; d < y1; d++) { const r = S.cal.harmonized.get(d); if (r) { nn += r.n; b += r.b; vo += r.vo; } }
   $("cmpTitle").textContent = `What each satellite sees, ${y}`;
   if (y < 2012) $("cmpSub").textContent = `Before 2012 only MODIS was in orbit, so the merged record equals the MODIS record.`;
-  else if (m === "f") $("cmpSub").textContent = `In ${y}, MODIS alone measured ${fmt(totals.modis)} MW of fire energy and VIIRS alone ${fmt(totals.viirs)} MW; the merged record keeps the overpasses of both, ${fmt(totals.harmonized)} MW in total, so no satellite's view of a fire is lost.`;
+  else if (m === "f") $("cmpSub").textContent = `In ${y}, MODIS alone measured ${fmt(totals.modis)} MW of fire energy and VIIRS alone ${fmt(totals.viirs)} MW. The merged line adds both: ${fmt(totals.harmonized)} MW.`;
   else { const both = b + vo > 0 ? Math.round(100 * vo / (b + vo + 1e-9)) : 0;
-    $("cmpSub").textContent = `In ${y}, MODIS alone saw ${fmt(series.modis.reduce((a, v) => a + v, 0))} and VIIRS alone ${fmt(series.viirs.reduce((a, v) => a + v, 0))} ${METRIC[m].name} (summed by week). Merged, ${fmt(nn)} real fires began that year; most of the extra ones are small fires only VIIRS can see.`; }
+    $("cmpSub").textContent = `In ${y}, MODIS alone saw ${fmt(series.modis.reduce((a, v) => a + v, 0))} and VIIRS alone ${fmt(series.viirs.reduce((a, v) => a + v, 0))} ${METRIC[m].name} (summed by week). Merged, ${fmt(nn)} fires began that year. Most of the extra ones are small fires that only VIIRS resolves.`; }
   const W = Math.max(box.clientWidth, 300), H = 230, pl = 54, pb = 22, pt = 8, pr = 6;
   const max = Math.max(1, ...series.modis, ...series.viirs, ...series.harmonized) * 1.08;
   const sx = (W - pl - pr) / 53, sy = v => H - pb - (H - pb - pt) * v / max;
@@ -346,11 +354,11 @@ async function renderMap() {
   }
   const when = rng ? `week of ${dayTxt(rng[0])}` : `${y}`;
   $("mapTitle").textContent = `Fires in ${regionName()}, ${when}: ${fmt(list.length)}`;
-  $("mapLede").textContent = rng ? `${fmt(list.length)} fires burned in ${regionName()} during the week of ${dayTxt(rng[0])}. Fainter circles have not been seen for a while. Click one to read its story.`
-    : `All ${fmt(list.length)} fires of ${y} in ${regionName()}. Pick a week in Figure 1 to narrow it down; click a fire to read its story.`;
+  $("mapLede").textContent = rng ? `${fmt(list.length)} fires burned in ${regionName()} during the week of ${dayTxt(rng[0])}. Fainter circles had not been seen for a while by the end of that week. Click one for its record.`
+    : `All ${fmt(list.length)} fires of ${y} in ${regionName()}. Pick a week in Fig. 1 to narrow it down, or click a fire for its record.`;
 }
 
-// ---------------- fire story ----------------
+// ---------------- fire record ----------------
 function renderDetail(ev) {
   const both = ev.nM > 0 && ev.nV > 0, passes = ev.tl.length, doubt = 1 - ev.base;
   const bCross = both ? W_CROSS * doubt : 0, bRep = passes >= 2 ? W_REPEAT * doubt : 0;
@@ -361,10 +369,11 @@ function renderDetail(ev) {
   const trustWhy = both ? "confirmed by two satellites" : ev.agree === "viirs_only" ? "seen by VIIRS only" : "seen by MODIS only";
   const big = ev.maxFrp >= 1000 ? " It was one of the most intense fires in the record." : "";
   const pct = Math.round(100 * ev.conf);
-  $("detail").innerHTML = `<p class="mono kicker">Fire story · <span style="color:${COL[ev.agree]}">${AGREE_LABEL[ev.agree]}</span></p>
+  $("detail").innerHTML = `<p class="mono kicker">Fire record · <span style="color:${COL[ev.agree]}">${AGREE_LABEL[ev.agree]}</span></p>
   <h3>${ev.region ? S.meta.regions[ev.region] : "Border area"}, ${dayTxt(ev.d0)}</h3>
   <p class="summary">This fire burned in ${prov} ${span}. ${who}.${big}</p>
   <p class="trust">Trust Score: <b>${pct}%</b> — ${trustWhy}</p><div class="meter"><span style="width:${pct}%"></span></div>
+  <p class="trustnote">Every fire event gets a trust score, like a credit score for satellite detections.</p>
   <div class="mono kicker" style="margin-top:14px">Who saw it, when</div><div id="timeline"></div>
   <details class="tech"><summary>Technical details</summary>
   <dl class="kv"><dt>Event</dt><dd>${ev.id}</dd><dt>Centroid</dt><dd>${ev.lat.toFixed(4)}, ${ev.lon.toFixed(4)}</dd>
@@ -392,7 +401,7 @@ function renderTimeline(ev) {
     hover(c, `<b>${s}</b> <span class="r">(${isM ? "MODIS, 1 km pixels" : "VIIRS, 375 m pixels"})</span><br><span class="r">${localTime(ev.t0 + p[0] * 60000)} local<br>${p[2]} pixel${p[2] > 1 ? "s" : ""} · <span class="m">${fmt(p[3], 1)} MW</span></span>`); });
 }
 
-// ---------------- Figure 4: two satellites, one truth ----------------
+// ---------------- Figure 4: what two satellites saw ----------------
 async function renderStory() {
   const st = await getJSON("data/story.json").catch(() => null);
   // Totals inside Türkiye's provinces, taken from the national calendar (the download box can
@@ -401,14 +410,15 @@ async function renderStory() {
   const nM = sum(H.dm), nV = sum(H.dv), fdBoth = sum(H.b), fdAll = sum(H.b) + sum(H.mo) + sum(H.vo);
   const c = { detections: nM + nV, events: S.meta.counts.harmonized.events_tr ?? S.meta.counts.harmonized.events };
   $("bigNum").innerHTML = `<span class="n">${fmt(c.detections)}</span> detections <span style="color:var(--muted)">→</span> <span class="n to">${fmt(c.events)}</span> fire events
-    <small>From ${S.meta.first_day.slice(0, 4)} to ${S.meta.last_day.slice(0, 4)}, records of the same fire are merged: on average ${(c.detections / c.events).toFixed(1)} satellite detections describe one real fire.</small>`;
-  $("footNums").textContent = `This almanac holds ${fmt(c.detections)} satellite fire detections over Türkiye from ${S.meta.first_day.slice(0, 4)} to ${S.meta.last_day.slice(0, 4)} (${fmt(nM)} from MODIS, ${fmt(nV)} from VIIRS), merged into ${fmt(c.events)} fire events. On ${fmt(100 * fdBoth / fdAll, 1)}% of fire-days the fire was seen by both satellites; most of the rest are small fires that only the sharper VIIRS instrument can see.`;
+    <small>${S.meta.first_day.slice(0, 4)}–${S.meta.last_day.slice(0, 4)}, inside Türkiye. On average ${(c.detections / c.events).toFixed(1)} detections describe one fire.</small>`;
+  $("bothLine").textContent = `Only ${fmt(100 * fdBoth / fdAll, 1)}% of fire-days were recorded by both satellites. Most of the rest are small fires that only VIIRS can resolve, so neither instrument on its own sees the whole season.`;
+  $("footNums").textContent = `This almanac holds ${fmt(c.detections)} satellite fire detections over Türkiye from ${S.meta.first_day.slice(0, 4)} to ${S.meta.last_day.slice(0, 4)} (${fmt(nM)} from MODIS, ${fmt(nV)} from VIIRS), merged into ${fmt(c.events)} fire events. Both satellites recorded the fire on ${fmt(100 * fdBoth / fdAll, 1)}% of fire-days.`;
   if (!st) return;
   const date = new Date(st.day + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
-  $("storyLede").textContent = `${date}, around ${st.name}. Left: every pixel the two instruments flagged that day. Right: the same data after merging.`;
-  $("storyNote").textContent = `MODIS logged ${fmt(st.n_modis)} hot pixels and VIIRS ${fmt(st.n_viirs)}: ${fmt(st.n_modis + st.n_viirs)} detections in one day. Many of them describe the same burning hillsides. Merged, they become ${fmt(st.events.length)} fire events, each with one location, one duration and one confidence.`;
+  $("storyLede").textContent = `${date}, around ${st.name}. Left, every pixel the two instruments flagged that day. Right, the same pixels after merging.`;
+  $("storyNote").textContent = `MODIS logged ${fmt(st.n_modis)} hot pixels that day and VIIRS ${fmt(st.n_viirs)}. Most describe the same few hillsides. After merging there are ${fmt(st.events.length)} fire events, each with a location, a duration and a Trust Score.`;
   $("capRaw").textContent = `Raw detections: ${fmt(st.n_modis + st.n_viirs)}`;
-  $("capMerged").textContent = `Real fire events: ${fmt(st.events.length)}`;
+  $("capMerged").textContent = `Fire events: ${fmt(st.events.length)}`;
   const pts = st.detections.map(p => [p[0], p[1]]).concat(st.events.map(p => [p[0], p[1]]));
   const bounds = L.latLngBounds(pts).pad(0.12);
   const mk = id => { const m = L.map(id, { zoomControl: false, attributionControl: false, scrollWheelZoom: false, dragging: false, doubleClickZoom: false, boxZoom: false, keyboard: false, touchZoom: false, preferCanvas: true });

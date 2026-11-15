@@ -174,3 +174,59 @@ if __name__ == "__main__":
     fig_before_after()
     print("frp", fig_frp())
     fig_match()
+    fig_dedup()
+    og_cover()
+
+
+def fig_dedup():
+    s = json.loads((OUT / "validation.json").read_text(encoding="utf-8"))["dedup"]
+    yr = pd.DataFrame(s["per_year"])
+    fig, ax = plt.subplots(figsize=(12, 5.2))
+    x = yr["year"].to_numpy()
+    ax.bar(x - 0.2, yr["modis"], 0.4, color=MODIS, label="MODIS detections")
+    ax.bar(x - 0.2, yr["viirs"], 0.4, bottom=yr["modis"], color=VIIRS, label="VIIRS detections")
+    ax.bar(x + 0.2, yr["events"], 0.4, color=ACCENT, label="fire events after merging")
+    ax.axvline(2011.5, color=MUTED, ls=":", lw=1)
+    ax.text(2011.6, ax.get_ylim()[1] * 0.93, "VIIRS (S-NPP) joins", color=INK2, fontsize=9.5)
+    ax.axvline(2017.5, color=MUTED, ls=":", lw=1)
+    ax.text(2017.6, ax.get_ylim()[1] * 0.86, "NOAA-20 joins", color=INK2, fontsize=9.5)
+    ax.set_ylabel("per year")
+    ax.legend(loc="upper left", fontsize=10)
+    ax.set_title(f"{s['detections']:,} detections become {s['events']:,} fire events ({s['ratio']:.1f} detections per fire)",
+                 fontsize=13)
+    finish(fig, "slide_dedup.png", "Detections: vegetation fires only (FIRMS type 0)")
+
+
+def og_cover():
+    cal = json.loads((OUT / "calendar_daily.json").read_text(encoding="utf-8"))
+    r = pd.DataFrame(cal["records"]["harmonized"]["TR"])
+    r["day"], r["region"] = pd.to_datetime(r["day"]), "TR"
+    wk = H.weekly_anomalies(r, "frp_mw", years=(2012, 2025), min_value=100)
+    vals = wk[wk["value"] > 0]["value"].sort_values().to_numpy()
+    qs = [vals[int(p * (len(vals) - 1))] for p in (0.40, 0.70, 0.88, 0.97)]
+    fig = plt.figure(figsize=(12, 6.3), dpi=100)
+    fig.patch.set_facecolor(PAPER)
+    fig.text(0.05, 0.86, "THE FIRE ALMANAC OF TÜRKIYE · 2001–2025", family="monospace", fontsize=13, color=MUTED)
+    fig.text(0.05, 0.62, "When does\nTürkiye burn?", fontsize=46, fontweight="bold", color=INK, va="center", linespacing=1.0)
+    fig.text(0.05, 0.36, "25 years of MODIS and VIIRS fire\ndetections in one weekly calendar.", fontsize=17, color=INK2, va="center")
+    fig.text(0.05, 0.12, "NASA FIRMS · MODIS C6.1 & VIIRS 375 m · FireWatch TR", family="monospace", fontsize=11, color=MUTED)
+    fig.add_artist(plt.Line2D([0.05, 0.95], [0.80, 0.80], color=INK, lw=1.2, transform=fig.transFigure))
+    ax = fig.add_axes([0.53, 0.10, 0.43, 0.66])
+    ax.set_axis_off()
+    for s in wk[wk["week"] < 53].itertuples():
+        lv = 0 if s.value <= 0 else 1 + sum(s.value > q for q in qs)
+        ax.add_patch(Rectangle((s.week, 2025 - s.year), 0.86, 0.86, fc=RAMP[lv], ec="none"))
+        if s.unusual and s.year >= 2012 and s.z >= 5:
+            ax.add_patch(Rectangle((s.week - 0.1, 2025 - s.year - 0.1), 1.06, 1.06, fc="none", ec="#8f1d07", lw=1.2))
+    ax.set_xlim(-0.5, 53.5); ax.set_ylim(25.5, -0.5)
+    fig.savefig(ROOT / "docs" / "og.png", dpi=100, facecolor=PAPER)
+    plt.close(fig)
+    fig = plt.figure(figsize=(1.8, 1.8), dpi=100)
+    fig.patch.set_facecolor(PAPER)
+    ax = fig.add_axes([0.12, 0.12, 0.76, 0.76]); ax.set_axis_off()
+    for i, (h, c) in enumerate(zip([0.3, 0.55, 0.85], RAMP[2:5])):
+        ax.add_patch(Rectangle((i * 0.34, 0), 0.28, h, fc=c))
+    ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+    fig.savefig(ROOT / "docs" / "og-icon.png", dpi=100, facecolor=PAPER)
+    plt.close(fig)
+    print("wrote docs/og.png, docs/og-icon.png")

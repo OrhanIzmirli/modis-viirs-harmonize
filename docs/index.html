@@ -4,13 +4,28 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Fire Almanac of Türkiye</title>
-<meta name="description" content="25 years of MODIS and VIIRS fire detections, harmonized into one calendar. Built on NASA FIRMS data.">
+<meta name="description" content="When does Türkiye burn? Twenty-five years of MODIS and VIIRS fire detections from NASA FIRMS, merged into one weekly calendar.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Fire Almanac of Türkiye">
+<meta property="og:title" content="The Fire Almanac of Türkiye">
+<meta property="og:description" content="When does Türkiye burn? Twenty-five years of MODIS and VIIRS fire detections, merged into one weekly calendar.">
+<meta property="og:url" content="https://orhanizmirli.github.io/modis-viirs-harmonize/">
+<meta property="og:image" content="https://orhanizmirli.github.io/modis-viirs-harmonize/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Cover of The Fire Almanac of Türkiye: a weekly fire calendar from 2001 to 2025 on a paper background.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Fire Almanac of Türkiye">
+<meta name="twitter:description" content="Twenty-five years of MODIS and VIIRS fire detections, merged into one weekly calendar.">
+<meta name="twitter:image" content="https://orhanizmirli.github.io/modis-viirs-harmonize/og.png">
+<meta name="theme-color" content="#faf7f2">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23faf7f2'/%3E%3Crect x='2' y='9' width='3' height='3' fill='%23f2c79a'/%3E%3Crect x='6.5' y='5' width='3' height='7' fill='%23e07b39'/%3E%3Crect x='11' y='2' width='3' height='10' fill='%23c2410c'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="og-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -27,13 +42,12 @@
       <p class="mono kicker">The Fire Almanac of Türkiye, 2001–2025</p>
       <h1>When does Türkiye burn?</h1>
       <p class="lead">25 years of MODIS and VIIRS fire detections, harmonized into one calendar.</p>
-      <p class="trustline">Every fire event gets a trust score — like a credit score, but for satellite detections.</p>
       <p class="byline">Built on NASA FIRMS data · by the FireWatch TR team</p>
       <a class="cta" href="#s-calendar">Explore the calendar</a>
     </div>
     <aside class="hero-side">
-      <p>Two NASA instruments have watched Türkiye's fires from orbit for a quarter of a century. They do not count the same way: one sees in 1 km pixels, the other in 375 m; they pass at different hours and grade their own certainty on different scales.</p>
-      <p>This almanac puts both records on one page, so that a week of fire in 2003 and a week of fire in 2021 can be compared fairly.</p>
+      <p>Two NASA instruments have watched Türkiye's fires from orbit since 2000 and 2012. They do not count the same way. One sees in 1 km pixels, the other in 375 m; they pass at different hours and grade their own certainty on different scales.</p>
+      <p>This almanac puts both records on one page, so that a week of fire in 2003 can be set beside a week in 2021.</p>
     </aside>
   </div>
 </section>
@@ -46,10 +60,10 @@
     </header>
     <div class="normal" id="normalBox" hidden>
       <p class="mono kicker">Is this week normal?</p>
-      <p class="normal-q" id="normalTxt">…</p>
+      <p class="normal-q" id="normalTxt"></p>
     </div>
     <div class="intro-grid">
-      <p class="lede">Every cell is a week. Darker means more fire. Weeks outlined in red were unusual for their time of year.</p>
+      <p class="lede">Every cell is a week. Darker means more fire. A red outline marks a week that was unusual for its time of year.</p>
       <div class="controls" aria-label="Choose a region and view">
         <label class="ctl"><span class="mono">Region</span><select id="regionSel"></select></label>
         <button id="drawBtn" class="btn" title="Drag a rectangle on the map in section 03">Draw area on map</button>
@@ -65,7 +79,7 @@
     </div>
 
     <figure class="fig">
-      <figcaption class="fig-head"><span class="mono fig-no">Figure 1</span> <span id="calTitle">Weekly fire activity, Türkiye</span></figcaption>
+      <figcaption class="fig-head"><span class="fig-no">Fig. 1</span> <span id="calTitle">Weekly fire activity, Türkiye</span></figcaption>
       <div id="toprank" class="toprank"></div>
       <div id="calendar" class="calendar" role="img" aria-label="Figure 1: heatmap of weekly fire activity, one row per year from 2001 to 2025 and one column per week. Summer weeks are darkest; in Türkiye the weeks of 26 July and 2 August 2021 are the most unusual in the record."></div>
       <div class="legend" id="calLegend"></div>
@@ -74,51 +88,53 @@
 
     <div class="fig-row">
       <figure class="fig">
-        <figcaption class="fig-head"><span class="mono fig-no">Figure 2</span> <span id="monthTitle">Month by month</span></figcaption>
+        <figcaption class="fig-head"><span class="fig-no">Fig. 2</span> <span id="monthTitle">Month by month</span></figcaption>
         <p class="fig-note" id="monthSub"></p>
         <div id="months" class="chart" role="img" aria-label="Figure 2: bar chart of monthly fire activity for the selected year, with the long-term monthly mean as a dashed line."></div>
-        <p class="source mono">Source: NASA FIRMS. Bars: selected year. Line: long-term monthly mean.</p>
+        <p class="source mono">Source: NASA FIRMS. Bars: selected year. Dashed line: long-term monthly mean.</p>
       </figure>
-      <figure class="fig">
-        <figcaption class="fig-head"><span class="mono fig-no">Figure 3</span> <span id="cmpTitle">What each satellite sees</span></figcaption>
-        <p class="fig-note" id="cmpSub"></p>
+      <figure class="fig fig-lower">
+        <figcaption class="fig-head"><span class="fig-no">Fig. 3</span> <span id="cmpTitle">What each satellite sees</span></figcaption>
         <div id="compare" class="chart" role="img" aria-label="Figure 3: weekly fire activity of the selected year computed from MODIS only, VIIRS only and both satellites merged."></div>
         <div class="legend"><span><i class="sw" style="background:var(--modis)"></i>MODIS only</span><span><i class="sw" style="background:var(--viirs)"></i>VIIRS only</span><span><i class="sw" style="background:var(--both)"></i>Both satellites, merged</span></div>
-        <p class="source mono">Source: NASA FIRMS. Same week-by-week measure, computed three ways.</p>
+        <p class="fig-note below" id="cmpSub"></p>
+        <p class="fig-note below small" id="cmpEnergy">How fire energy is added up: each detection reports the radiative power of its pixel at the moment of the overpass. A pixel is counted once, in the overpass that recorded it, so nothing is counted twice within a pass. A fire seen by both satellites contributes one reading per overpass from each, which is why the merged line is a sum of observations rather than a physical total.</p>
+        <p class="source mono">Source: NASA FIRMS. One week-by-week measure, computed three ways.</p>
       </figure>
     </div>
   </div>
 </section>
 
-<section class="sec" id="s-story">
+<section class="sec sec-story" id="s-story">
   <div class="wrap">
     <header class="sec-head">
       <span class="num">02</span>
-      <h2>Two satellites, one truth</h2>
+      <h2>What two satellites saw</h2>
     </header>
     <div class="intro-grid">
-      <p class="lede" id="storyLede">The same fires, seen by two instruments at different sizes and times.</p>
+      <p class="lede" id="storyLede">The same fires, recorded by two instruments at different pixel sizes and times of day.</p>
       <p class="aside-note" id="storyNote"></p>
     </div>
     <div class="story-maps">
       <figure class="fig">
-        <figcaption class="fig-head"><span class="mono fig-no">Figure 4a</span> <span id="capRaw">Raw detections</span></figcaption>
+        <figcaption class="fig-head"><span class="fig-no">Fig. 4a</span> <span id="capRaw">Raw detections</span></figcaption>
         <div id="mapRaw" class="minimap" role="img" aria-label="Figure 4a: map of every MODIS and VIIRS fire pixel around Manavgat on 29 July 2021."></div>
         <div class="legend"><span><i class="dot" style="background:var(--modis)"></i>MODIS pixel</span><span><i class="dot" style="background:var(--viirs)"></i>VIIRS pixel</span></div>
       </figure>
       <div class="arrow mono" aria-hidden="true">→</div>
       <figure class="fig">
-        <figcaption class="fig-head"><span class="mono fig-no">Figure 4b</span> <span id="capMerged">Real fire events</span></figcaption>
+        <figcaption class="fig-head"><span class="fig-no">Fig. 4b</span> <span id="capMerged">Fire events</span></figcaption>
         <div id="mapMerged" class="minimap" role="img" aria-label="Figure 4b: the same detections merged into fire events."></div>
         <div class="legend"><span><i class="dot" style="background:var(--both)"></i>Seen by both satellites</span><span><i class="dot" style="background:var(--modis)"></i>MODIS only</span><span><i class="dot" style="background:var(--viirs)"></i>VIIRS only</span></div>
       </figure>
     </div>
     <p class="source mono story-src">Source: NASA FIRMS, MODIS C6.1 &amp; VIIRS 375 m. Circle size in 4b: fire energy.</p>
     <p class="bignum" id="bigNum"></p>
-    <div class="cols3">
-      <div><h3>Same fire, counted twice?</h3><p>MODIS and VIIRS often see the same fire minutes or hours apart. When two records are this close in space and time, we merge them into one fire.</p></div>
-      <div><h3>Different confidence scales?</h3><p>One instrument rates fires from 0 to 100, the other says low, nominal or high. We put both on one scale, and a fire seen by both earns extra trust.</p></div>
-      <div><h3>1 km vs 375 m pixels?</h3><p>A MODIS pixel covers about seven times the area of a VIIRS pixel. We model each pixel's real footprint, so a large pixel and a small one can still match.</p></div>
+    <p class="bothline" id="bothLine"></p>
+    <div class="cols3 how">
+      <div><h3>Duplicates</h3><p>MODIS and VIIRS often record the same fire minutes or hours apart. Records that close in space and time are merged into one fire.</p></div>
+      <div><h3>Confidence</h3><p>MODIS grades each detection from 0 to 100; VIIRS says low, nominal or high. Both are mapped onto one scale, and a fire recorded by both satellites gets a higher score.</p></div>
+      <div><h3>Pixel size</h3><p>A MODIS pixel covers about seven times the ground of a VIIRS pixel.</p></div>
     </div>
   </div>
 </section>
@@ -130,11 +146,11 @@
       <h2>The live map</h2>
     </header>
     <div class="intro-grid">
-      <p class="lede" id="mapLede">Pick a week in Figure 1 to see its fires here. Click a fire to read its story.</p>
+      <p class="lede" id="mapLede">Pick a week in Fig. 1 to see its fires here. Click a fire for its record.</p>
     </div>
     <div class="map-grid">
       <figure class="fig">
-        <figcaption class="fig-head"><span class="mono fig-no">Figure 5</span> <span id="mapTitle">Fire events</span></figcaption>
+        <figcaption class="fig-head"><span class="fig-no">Fig. 5</span> <span id="mapTitle">Fire events</span></figcaption>
         <div id="map" role="application" aria-label="Figure 5: interactive map of fire events for the selected week"></div>
         <div class="legend" id="mapLegend">
           <span><i class="dot" style="background:var(--both)"></i>Seen by both satellites</span>
@@ -144,8 +160,9 @@
         <p class="source mono" id="mapHint">Source: NASA FIRMS. Circle size: fire energy. Basemap: Esri.</p>
       </figure>
       <aside class="side" id="detail">
-        <p class="mono kicker">Fire story</p>
-        <p class="muted">Click any circle on the map. You will see where the fire burned, for how long, which satellites saw it, and how sure we are.</p>
+        <p class="mono kicker">Fire record</p>
+        <p class="muted">Click a circle on the map to see where the fire burned, for how long, and which satellites recorded it.</p>
+        <p class="muted small">Each fire carries a Trust Score, something like a credit score for satellite detections.</p>
       </aside>
     </div>
   </div>
@@ -158,9 +175,9 @@
       <h2>Who is this for?</h2>
     </header>
     <div class="cols3 who">
-      <div><p class="mono kicker">The fire manager in Muğla</p><h3>“Her crews can't be everywhere.”</h3><p>The Almanac shows which weeks historically demand pre-positioned teams — before the season starts.</p></div>
-      <div><p class="mono kicker">The farmer's neighbor in Diyarbakır</p><h3>“Every October, stubble burning escapes into orchards.”</h3><p>The Almanac shows exactly when agricultural burning peaks — and why there are better alternatives.</p></div>
-      <div><p class="mono kicker">The researcher, anywhere</p><h3>“Cross-calibrating MODIS and VIIRS takes months.”</h3><p>We publish 25 years of harmonized events as open CSV/GeoJSON — one download away.</p></div>
+      <div><p class="mono kicker">A fire manager in Muğla</p><p class="who-t">A fire manager in Muğla cannot position crews everywhere. The almanac shows which weeks have historically demanded them, so teams can be placed before the season starts.</p></div>
+      <div><p class="mono kicker">A farmer's neighbour in Diyarbakır</p><p class="who-t">In Diyarbakır, more fires start in October than in any other month. Stubble fires can spread into neighbouring orchards and fields. The almanac shows when burning peaks, and section 06 covers the stubble-burning ban and what to do instead.</p></div>
+      <div><p class="mono kicker">A researcher, anywhere</p><p class="who-t">Matching MODIS and VIIRS takes time. The merged events are in the files below.</p></div>
     </div>
   </div>
 </section>
@@ -172,15 +189,15 @@
       <h2>Download the data</h2>
     </header>
     <div class="intro-grid">
-      <p class="lede">Everything on this page is built from three open files. Use them freely (MIT License; FIRMS data courtesy of NASA).</p>
+      <p class="lede">The page is built from three open files. MIT License; FIRMS data courtesy of NASA.</p>
       <div class="dl">
         <p><a href="https://github.com/OrhanIzmirli/modis-viirs-harmonize/raw/main/output/events.geojson.gz">events.geojson.gz</a><br>
-        One point per harmonized fire event: <span class="mono">event_id, first_seen, last_seen, sensors, satellites, n_modis, n_viirs, max_frp, sum_frp, harmonized_confidence</span> (the Trust Score, 0–1)<span class="mono">, agreement, province</span>.</p>
+        One point per fire event: <span class="mono">event_id, first_seen, last_seen, sensors, satellites, n_modis, n_viirs, max_frp, sum_frp, harmonized_confidence</span> (the Trust Score, 0–1)<span class="mono">, agreement, province</span>.</p>
         <p><a href="https://github.com/OrhanIzmirli/modis-viirs-harmonize/raw/main/output/calendar_daily.csv.gz">calendar_daily.csv.gz</a><br>
-        One row per view, region and local day: <span class="mono">mode</span> (harmonized / modis / viirs), <span class="mono">region</span> (TR or a TR-xx province code), <span class="mono">day, events, new_events, frp_mw, det_modis, det_viirs</span> and, for harmonized, <span class="mono">both, modis_only, viirs_only</span>.</p>
+        One row per view, region and local day: <span class="mono">mode</span> (harmonized, modis or viirs), <span class="mono">region</span> (TR or a TR-xx province code), <span class="mono">day, events, new_events, frp_mw, det_modis, det_viirs</span> and, for harmonized, <span class="mono">both, modis_only, viirs_only</span>.</p>
         <p><a href="https://github.com/OrhanIzmirli/modis-viirs-harmonize/raw/main/output/detections_harmonized.csv.gz">detections_harmonized.csv.gz</a><br>
         Every MODIS and VIIRS detection in one schema (<span class="mono">lat, lon, time_utc, sensor, satellite, frp_mw, footprint_km2, frp_mw_per_km2, day_night, confidence_raw, confidence_class, confidence_score</span>) with its <span class="mono">event_id</span>.</p>
-        <p class="muted">Times are UTC in the detection file and local (Europe/Istanbul) in the calendar. Method, code and tests: <a href="https://github.com/OrhanIzmirli/modis-viirs-harmonize">GitHub</a>.</p>
+        <p class="muted">Times are UTC in the detection file and local (Europe/Istanbul) in the calendar. Method, code and tests are on <a href="https://github.com/OrhanIzmirli/modis-viirs-harmonize">GitHub</a>.</p>
       </div>
     </div>
   </div>
@@ -190,10 +207,10 @@
   <div class="wrap">
     <header class="sec-head">
       <span class="num">06</span>
-      <h2>Why it matters</h2>
+      <h2>Before the season</h2>
     </header>
     <div class="learn-grid">
-      <div id="why" class="why"><p class="muted">Select an outlined week in Figure 1 to read why that period matters.</p></div>
+      <div id="why" class="why"><p class="muted">Select an outlined week in Fig. 1 for notes on that period.</p></div>
       <div id="facts" class="facts"></div>
     </div>
   </div>
@@ -209,7 +226,7 @@
 
 <div id="tip" class="tip" role="tooltip" hidden></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="app.js?v=9"></script>
-<script src="edu.js?v=5"></script>
+<script src="app.js?v=10"></script>
+<script src="edu.js?v=6"></script>
 </body>
 </html>
