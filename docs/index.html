@@ -150,6 +150,12 @@
     </div>
     <div class="map-grid">
       <figure class="fig">
+        <div class="controls map-ctl" aria-label="Choose a region and a week for the map">
+          <label class="ctl"><span class="mono">Region</span><select id="regionSel2" aria-label="Region"></select></label>
+          <div class="seg step" role="group" aria-label="Week or year">
+            <button id="mapPrev" aria-label="Previous">←</button><span id="mapWhen" class="mono" aria-live="polite"></span><button id="mapNext" aria-label="Next">→</button>
+          </div>
+        </div>
         <figcaption class="fig-head"><span class="fig-no">Fig. 5</span> <span id="mapTitle">Fire events</span></figcaption>
         <div id="map" role="application" aria-label="Figure 5: interactive map of fire events for the selected week"></div>
         <div class="legend" id="mapLegend">

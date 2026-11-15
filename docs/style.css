@@ -206,3 +206,12 @@ body.cb { --c0: #f0ede6; --c1: #d8e6a8; --c2: #7ccf6b; --c3: #21a585; --c4: #2c7
 .news { font-size: 15px; color: var(--ink2); margin: -6px 0 14px; padding: 8px 10px; border-left: 3px solid var(--both); background: var(--c0); }
 .news .kicker { display: block; margin-bottom: 2px; }
 .news .tag { font: 12px var(--mono); border: 1px solid var(--rule2); padding: 1px 6px; margin-left: 4px; white-space: nowrap; }
+
+/* section 03: map controls (same language as the calendar controls) */
+.map-ctl { margin: 0 0 12px; }
+.step { align-items: stretch; }
+.step button { padding: 8px 12px; }
+.step button:disabled { color: var(--muted); cursor: default; border-color: var(--rule); }
+.step span { display: flex; align-items: center; justify-content: center; min-width: 13.5em; padding: 0 12px; border: 1px solid var(--rule); border-left: 0; font-size: 13px; color: var(--ink); white-space: nowrap; }
+.step span + button { border-left: 0; }
+@media (max-width: 600px) { .step { width: 100%; } .step span { flex: 1; min-width: 0; } }

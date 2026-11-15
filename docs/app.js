@@ -89,7 +89,7 @@ map.on("mousedown", e => { if (!drawing) return; drawStart = e.latlng;
 map.on("mousemove", e => { if (drawing && drawStart) rectLayer.setBounds(L.latLngBounds(drawStart, e.latlng)); });
 map.on("mouseup", e => { if (!drawing || !drawStart) return; const b = L.latLngBounds(drawStart, e.latlng); drawStart = null; setDrawing(false);
   if (Math.abs(b.getNorth() - b.getSouth()) < 0.05 || Math.abs(b.getEast() - b.getWest()) < 0.05) { status("Area too small"); return; }
-  S.rect = b; S.region = "rect"; $("regionSel").value = "rect"; styleProvinces(); loadRegion(true); });
+  S.rect = b; S.region = "rect"; $("regionSel").value = "rect"; $("regionSel2").value = "rect"; styleProvinces(); loadRegion(true); });
 
 // ---------------- data ----------------
 function colsToMap(col, hasAgree) {
@@ -452,10 +452,27 @@ function renderAll() {
   if (S.year == null) S.year = S.meta.years.includes(2021) ? 2021 : S.meta.years[S.meta.years.length - 1];
   document.querySelectorAll("#modeSeg button").forEach(b => b.classList.toggle("on", b.dataset.mode === S.mode));
   document.querySelectorAll("#metricSeg button").forEach(b => b.classList.toggle("on", b.dataset.metric === S.metric));
-  renderCalendar(); renderNormal(); renderMonths(); renderCompare(); renderMap();
+  renderCalendar(); renderNormal(); renderMonths(); renderCompare(); renderMap(); syncMapCtl();
   if (window.HSH_EDU) window.HSH_EDU.update(S);
 }
-function selectRegion(id) { S.region = id; $("regionSel").value = id; if (id !== "rect" && rectLayer) { map.removeLayer(rectLayer); rectLayer = null; }
+// section 03 controls: mirror of the region select + week/year stepper, kept in sync with Fig. 1
+function mapStep(dir) {
+  const ys = S.meta.years, y = S.year;
+  if (S.week == null) { const ny = y + dir; if (ys.includes(ny)) { S.year = ny; S.day = null; S.sel = null; renderAll(); } return; }
+  let w = S.week + dir, yy = y;
+  if (w < 0) { yy = y - 1; if (!ys.includes(yy)) return; w = S.wk.W[yy].length - 1; }
+  else if (w >= S.wk.W[y].length) { yy = y + 1; if (!ys.includes(yy)) return; w = 0; }
+  selectWeek(yy, w);
+}
+function syncMapCtl() {
+  const sel2 = $("regionSel2"); if (!sel2 || !S.wk) return;
+  sel2.value = S.region;
+  const ys = S.meta.years, first = ys[0], last = ys[ys.length - 1];
+  $("mapWhen").textContent = S.week == null ? `All of ${S.year}` : `Week of ${dayTxt(weekRange(S.year, S.week)[0])}`;
+  $("mapPrev").disabled = S.week == null ? S.year <= first : S.year <= first && S.week <= 0;
+  $("mapNext").disabled = S.week == null ? S.year >= last : S.year >= last && S.week >= S.wk.W[S.year].length - 1;
+}
+function selectRegion(id) { S.region = id; $("regionSel").value = id; $("regionSel2").value = id; if (id !== "rect" && rectLayer) { map.removeLayer(rectLayer); rectLayer = null; }
   styleProvinces(); loadRegion(); }
 
 async function init() {
@@ -463,6 +480,8 @@ async function init() {
   const sel = $("regionSel"), names = Object.entries(S.meta.regions).filter(([k]) => k !== "TR").sort((a, b) => a[1].localeCompare(b[1], "tr"));
   sel.innerHTML = `<option value="TR">Türkiye, all provinces</option>` + names.map(([k, v]) => `<option value="${k}">${v}</option>`).join("") + `<option value="rect" disabled>Drawn area</option>`;
   sel.addEventListener("change", () => selectRegion(sel.value));
+  const sel2 = $("regionSel2"); sel2.innerHTML = sel.innerHTML; sel2.addEventListener("change", () => selectRegion(sel2.value));
+  $("mapPrev").addEventListener("click", () => mapStep(-1)); $("mapNext").addEventListener("click", () => mapStep(1));
   document.querySelectorAll("#modeSeg button").forEach(b => b.addEventListener("click", () => { S.mode = b.dataset.mode; renderAll(); }));
   document.querySelectorAll("#metricSeg button").forEach(b => b.addEventListener("click", () => { S.metric = b.dataset.metric; renderAll(); }));
   provLayer.addData(await getJSON("data/provinces.geojson"));
