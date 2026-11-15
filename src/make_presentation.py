@@ -152,20 +152,30 @@ pages.append(fig)
 # 4 — the product ----------------------------------------------------------------------------
 fig, ax = slide(4, "The product",
                 "988,698 detections → 448,364 fire events: 2.2 records per fire, 2001–2025.")
-image(fig, FIG / "site_map.png", 0.6, 1.95, W - 1.2, 3.95)
-numbered(ax, 0.6, 1.62, W - 1.2, [
-    ("01", "Calendar", "every week since\n2001, at a glance"),
-    ("02", "Trust Score", "how sure we are,\nper fire"),
-    ("03", "Live map", "any week, any\nprovince"),
-    ("04", "Education", "sourced facts\nbefore the season"),
-    ("05", "Open data", "three files,\nMIT license")], size=12.5, numsize=15)
+# top 2/3: the calendar (Fig. 1 on the site) is the product
+cx, cy, cw, chh = image(fig, FIG / "site_calendar.png", 0.6, 2.2, 7.9, 3.8, crop=(0, 1, 0, 0.955))
+label(ax, 0.6, 2.02, "FIG. 1 ON THE LIVE SITE: EVERY WEEK 2001–2025; 2021 ROW: THE TWO DARK MANAVGAT/MARMARIS WEEKS",
+      color=MUTED, size=9.5, va="center")
+feats = [("01", "Calendar", "every week since 2001"), ("02", "Trust Score", "how sure, per fire"),
+         ("03", "Live map", "any week, any province"), ("04", "Education", "sourced facts, before the season"),
+         ("05", "Open data", "three files, MIT license")]
+for i, (no, h_, words) in enumerate(feats):
+    y = 5.95 - i * 0.76
+    ax.text(8.85, y, no, family=MONO, size=16, color=ACCENT, weight="bold", va="top")
+    ax.text(9.5, y, h_, family=SERIFS, size=16, color=INK, weight="bold", va="top")
+    ax.text(9.5, y - 0.36, words, family=SANS, size=12.5, color=INK2, va="top")
+# bottom 1/3: map + fire record, smaller
+image(fig, FIG / "site_map.png", 0.6, 0.68, 3.6, 1.2, crop=(0, 1, 0.12, 0.84))
+ax.text(4.45, 1.28, "Click a week, then a fire: where it burned, for how long, which satellites saw it,\n"
+        "its Trust Score (Antalya, 28 Jul 2021: 77%, confirmed by two satellites) and news confirmation.",
+        family=SANS, size=12.5, color=INK2, va="center", linespacing=1.35)
 pages.append(fig)
 
 # 5 — does it work ---------------------------------------------------------------------------
 fig, ax = slide(5, "Does it work? We checked.", "Same fire, two satellites, minutes apart: do they agree?")
 image(fig, FIG / "slide_frp_scatter.png", 0.6, 0.85, 5.1, 5.05, crop=(0, 1, 0, 0.935))
 stats = [("r = 0.69", "fire energy, MODIS vs VIIRS,\n25,171 same-fire pairs ≤ 30 min apart"),
-         ("8.7%", "of fire-days seen by both satellites:\nneither one alone sees the season"),
+         ("35×", "the 2021 Manavgat week vs the\nlong-term average (fire energy)"),
          ("r = 0.76", "vs official OGM burnt area (log), 14 Aegean/\nMediterranean provinces, Jun–Oct, 2001–24"),
          ("≤ 6%", "change in event count when distance and\ntime thresholds move ±50% (2021)")]
 for i, (k, t) in enumerate(stats):
