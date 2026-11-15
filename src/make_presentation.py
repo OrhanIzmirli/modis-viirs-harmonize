@@ -101,15 +101,16 @@ pages.append(fig)
 
 # 2 — problem ---------------------------------------------------------------
 fig, ax = slide(2, "The problem", "Fires don't surprise us. Our data does.")
-ax.text(0.6, 5.45,
-        "FireWatch TR, our live app, shows satellite hot spots across Türkiye as they arrive from NASA FIRMS.\n"
-        "To put today's fires in context we need 25 years of history, and there two satellite records disagree.",
-        family=SANS, size=17, color=INK2, va="top", linespacing=1.45)
+ax.text(0.6, 5.5,
+        "FireWatch TR is a free wildfire alert app on Google Play: people save the places they care about and get\n"
+        "notified when NASA FIRMS satellites detect fire nearby, with weather-based risk scores and news-verified\n"
+        "events. To put today's fires in context we need 25 years of history, and there two satellite records disagree.",
+        family=SANS, size=16, color=INK2, va="top", linespacing=1.45)
 cols = [("PIXEL SIZE", "1 km vs 375 m", "MODIS (Terra, Aqua) sees\n1 km pixels; VIIRS (S-NPP,\nNOAA-20, NOAA-21) sees 375 m.\nSmall fires appear only in VIIRS."),
         ("CONFIDENCE", "0–100 vs words", "MODIS gives a number from\n0 to 100; VIIRS gives low,\nnominal or high. The two scales\ncannot be compared as they are."),
         ("DUPLICATES", "One fire, many rows", "Both sensors, several passes\na day: the same fire is\nrecorded again and again.\nCounting rows overstates fires.")]
 for i, (k, h_, b) in enumerate(cols):
-    box(ax, 0.6 + i * 4.1, 0.95, 3.85, 3.35, k, h_, b, size=15)
+    box(ax, 0.6 + i * 4.1, 0.85, 3.85, 3.2, k, h_, b, size=15)
 pages.append(fig)
 
 # 3 — method ----------------------------------------------------------------
@@ -129,9 +130,8 @@ pages.append(fig)
 
 # 4 — result ----------------------------------------------------------------
 fig, ax = slide(4, "Result", "988,698 detections → 448,364 fire events")
-image(fig, FIG / "slide_before_after.png", 0.6, 1.35, 6.6, 4.35)
-image(fig, FIG / "app_calendar.jpg", 7.45, 1.95, 5.3, 3.75)
-ax.text(7.45, 1.55, "The almanac calendar on the live site", family=MONO, size=11, color=MUTED)
+image(fig, FIG / "slide_before_after.png", 0.6, 1.4, 7.3, 4.35)
+image(fig, FIG / "slide_calendar.png", 8.1, 1.3, 4.65, 4.5)
 ax.text(0.6, 0.95, "2.2", family=SERIF, size=30, color=ACCENT, weight="bold", va="center")
 ax.text(1.5, 0.95, "records per fire on average, 2001–2025, inside Türkiye's 81 provinces", family=SANS,
         size=17, color=INK, va="center")
@@ -179,8 +179,8 @@ ax.text(0.6, 5.55, "LIMITS", family=MONO, size=12, color=ACCENT, va="top")
 for i, t in enumerate(limits):
     ax.text(0.6, 5.1 - i * 0.85, "—  " + t, family=SANS, size=14, color=INK, va="top", linespacing=1.3)
 refs = [("NASA FIRMS active fire data", "https://firms.modaps.eosdis.nasa.gov/"),
-        ("MODIS C6.1 Active Fire User's Guide", "https://modis-fire.umd.edu/guides.html"),
-        ("VIIRS 375 m Active Fire User's Guide", "https://www.earthdata.nasa.gov/data/instruments/viirs"),
+        ("MODIS C6.1 Active Fire User's Guide", "https://modis-fire.umd.edu/files/MODIS_C6_C6.1_Fire_User_Guide_1.0.pdf"),
+        ("VIIRS 375 m Active Fire User's Guide", "https://viirsland.gsfc.nasa.gov/PDF/VIIRS_activefire_User_Guide.pdf"),
         ("NASA GISTEMP v4", "https://data.giss.nasa.gov/gistemp/"),
         ("OGM Ormancılık İstatistikleri 2024", "https://www.ogm.gov.tr/"),
         ("geoBoundaries ADM1 / © OpenStreetMap", "https://www.geoboundaries.org/"),

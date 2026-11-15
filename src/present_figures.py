@@ -101,20 +101,21 @@ def fig_before_after():
         ax.set_xlim(ext[0], ext[1]); ax.set_ylim(ext[2], ext[3])
         ax.set_aspect(1 / np.cos(np.radians(lats.mean())))
         ax.set_facecolor("#e3e8ec")
-        ax.grid(False); ax.tick_params(labelsize=8.5, colors=MUTED)
+        ax.grid(False); ax.tick_params(labelsize=10, colors=MUTED)
+        ax.title.set_fontsize(15)
     m = det[:, 2] == 0
     axes[0].scatter(det[~m, 1], det[~m, 0], s=6, color=VIIRS, alpha=0.7, lw=0, label=f"VIIRS 375 m pixels ({(~m).sum():,})")
     axes[0].scatter(det[m, 1], det[m, 0], s=22, color=MODIS, alpha=0.5, lw=0, label=f"MODIS 1 km pixels ({m.sum():,})")
     axes[0].set_title(f"Before: {len(det):,} raw detections")
-    axes[0].legend(loc="lower left", fontsize=9.5)
+    axes[0].legend(loc="lower left", fontsize=12, markerscale=1.6)
     col = {"both": ACCENT, "modis_only": MODIS, "viirs_only": VIIRS}
     for la, lo, ag, frp, n, k, nd in sorted(ev, key=lambda e: -e[3]):
         axes[1].scatter([lo], [la], s=max(40, 40 * np.log1p(frp)), color=col[ag], alpha=0.8, edgecolor=PAPER, lw=1)
         axes[1].annotate(f"{nd:,} detections that day", (lo, la), xytext=(10, 8), textcoords="offset points",
-                         fontsize=9.5, color=INK)
+                         fontsize=12, color=INK)
     axes[1].set_title(f"After: {len(ev)} fire events (all seen by both satellites)" if all(e[2] == "both" for e in ev)
                       else f"After: {len(ev)} fire events")
-    fig.suptitle(f"Two satellites, one truth — {st['name']}, {pd.Timestamp(st['day']).day} {pd.Timestamp(st['day']):%B %Y}",
+    fig.suptitle(f"What two satellites saw — {st['name']}, {pd.Timestamp(st['day']).day} {pd.Timestamp(st['day']):%B %Y}",
                  x=0.01, ha="left", fontsize=16, fontweight="bold", y=1.02)
     finish(fig, "slide_before_after.png", "Event circles sized by total fire radiative power")
 
@@ -380,8 +381,47 @@ def fig_ogm():
     print("wrote", FIG / "slide_ogm.png", json.dumps(res, ensure_ascii=False))
 
 
+
+def fig_calendar_slide():
+    """Readable crop of the almanac calendar for slides: weekly fire energy, all weeks, 2012-2025."""
+    cal = json.loads((OUT / "calendar_daily.json").read_text(encoding="utf-8"))
+    r = pd.DataFrame(cal["records"]["harmonized"]["TR"])
+    r["day"], r["region"] = pd.to_datetime(r["day"]), "TR"
+    wk = H.weekly_anomalies(r, "frp_mw", years=(2012, 2025), min_value=100)
+    y0, y1 = 2012, 2025
+    sub = wk[wk["year"].between(y0, y1)]
+    allv = wk[(wk["year"] >= 2012) & (wk["value"] > 0)]["value"].sort_values().to_numpy()
+    qs = [allv[int(p * (len(allv) - 1))] for p in (0.40, 0.70, 0.88, 0.97)]
+    fig, ax = plt.subplots(figsize=(7.2, 5.2))
+    ax.grid(False)
+    for s in sub.itertuples():
+        lv = 0 if s.value <= 0 else 1 + sum(s.value > q for q in qs)
+        ax.add_patch(Rectangle((s.week - 0.45, y1 - s.year - 0.42), 0.9, 0.84, fc=RAMP[lv], ec="none"))
+        if s.unusual and s.z >= 5:
+            ax.add_patch(Rectangle((s.week - 0.5, y1 - s.year - 0.5), 1.0, 1.0, fc="none", ec="#3b0d03", lw=1.8))
+    wmax = int(sub["week"].max())
+    ax.set_xlim(sub["week"].min() - 0.6, wmax + 0.6)
+    ax.set_ylim(y1 - y0 + 0.6, -0.6)
+    ax.set_yticks(range(0, y1 - y0 + 1, 1), [str(y1 - i) if (y1 - i) % 2 else "" for i in range(0, y1 - y0 + 1)],
+                  fontsize=13)
+    ticks = [H.week_index(pd.Series([pd.Timestamp(2021, m, 1)])).iloc[0] for m in (1, 3, 5, 7, 9, 11)]
+    ax.set_xticks(ticks, ["Jan", "Mar", "May", "Jul", "Sep", "Nov"], fontsize=13)
+    ax.tick_params(length=0)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.set_title("Weekly fire energy, Türkiye, 2012–2025", fontsize=16, pad=10)
+    for i, (lab, c) in enumerate([("low", RAMP[1]), ("", RAMP[2]), ("", RAMP[3]), ("", RAMP[4]), ("high", RAMP[5])]):
+        fig.patches.append(Rectangle((0.14 + i * 0.05, 0.015), 0.045, 0.03, transform=fig.transFigure, fc=c, ec="none"))
+    fig.text(0.13, 0.03, "less", ha="right", va="center", fontsize=12, color=INK2)
+    fig.text(0.395, 0.03, "more energy     dark box = exceptional week (z ≥ 5)", ha="left", va="center",
+             fontsize=12, color=INK2)
+    fig.subplots_adjust(bottom=0.14)
+    finish(fig, "slide_calendar.png", "Harmonized MODIS + VIIRS")
+
+
 if __name__ == "__main__":
     fig_2021()
+    fig_calendar_slide()
     fig_before_after()
     print("frp", fig_frp())
     fig_match()
