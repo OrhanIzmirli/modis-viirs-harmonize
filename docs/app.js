@@ -368,6 +368,14 @@ async function renderMap() {
 }
 
 // ---------------- fire record ----------------
+// news confirmation (data/news_refs.json): a label and a link only, never part of the Trust Score
+let NEWS = {};
+getJSON("data/news_refs.json").then(d => { d.refs.forEach(r => { NEWS[r.event_id] = r; }); if (S.sel && NEWS[S.sel.id]) renderDetail(S.sel); }).catch(() => {});
+const escH = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function newsLine(id) {
+  const n = NEWS[id]; if (!n) return "";
+  return `<p class="news"><span class="mono kicker">Reported in the news</span> ${escH(n.place)}: <a href="${escH(n.url)}" target="_blank" rel="noopener">${escH(n.source)}</a>${n.reported_cause ? ` <span class="tag">reported cause: ${escH(n.reported_cause)}</span>` : ""}</p>`;
+}
 function renderDetail(ev) {
   const both = ev.nM > 0 && ev.nV > 0, passes = ev.tl.length, doubt = 1 - ev.base;
   const bCross = both ? W_CROSS * doubt : 0, bRep = passes >= 2 ? W_REPEAT * doubt : 0;
@@ -382,7 +390,7 @@ function renderDetail(ev) {
   <h3>${ev.region ? S.meta.regions[ev.region] : "Border area"}, ${dayTxt(ev.d0)}</h3>
   <p class="summary">This fire burned in ${prov} ${span}. ${who}.${big}</p>
   <p class="trust">Trust Score: <b>${pct}%</b> — ${trustWhy}</p><div class="meter"><span style="width:${pct}%"></span></div>
-  <p class="trustnote">Every fire event gets a trust score, like a credit score for satellite detections.</p>
+  <p class="trustnote">Every fire event gets a trust score, like a credit score for satellite detections.</p>${newsLine(ev.id)}
   <div class="mono kicker" style="margin-top:14px">Who saw it, when</div><div id="timeline"></div>
   <details class="tech"><summary>Technical details</summary>
   <dl class="kv"><dt>Event</dt><dd>${ev.id}</dd><dt>Centroid</dt><dd>${ev.lat.toFixed(4)}, ${ev.lon.toFixed(4)}</dd>

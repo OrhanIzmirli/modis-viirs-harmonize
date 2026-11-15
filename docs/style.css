@@ -202,3 +202,7 @@ details.tech summary { cursor: pointer; font: 12.5px var(--mono); text-transform
 /* colorblind-safe mode: viridis-like sequential ramp + Okabe-Ito categories */
 body.cb { --c0: #f0ede6; --c1: #d8e6a8; --c2: #7ccf6b; --c3: #21a585; --c4: #2c728e; --c5: #3b2a6b;
   --both: #d55e00; --modis: #009e73; --viirs: #0072b2; }
+
+.news { font-size: 15px; color: var(--ink2); margin: -6px 0 14px; padding: 8px 10px; border-left: 3px solid var(--both); background: var(--c0); }
+.news .kicker { display: block; margin-bottom: 2px; }
+.news .tag { font: 12px var(--mono); border: 1px solid var(--rule2); padding: 1px 6px; margin-left: 4px; white-space: nowrap; }

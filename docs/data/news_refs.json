@@ -1,0 +1,69 @@
+{
+  "description": "News confirmation for the highest-energy fire events in the archive. Matched by place and date (event centroid and first/last detection vs. the reported fire). Confirmation and labelling only: news does not change the Trust Score. reported_cause is filled only when the linked report states a cause for this fire; otherwise null.",
+  "checked": "2026-11-15",
+  "refs": [
+    {
+      "event_id": "H394121",
+      "date": "2021-07-28",
+      "place": "Manavgat, Antalya",
+      "source": "Anadolu Ajansı",
+      "title": "Manavgat yangınının üzerinden bir yıl geçti",
+      "url": "https://www.aa.com.tr/tr/gundem/manavgat-yangininin-uzerinden-bir-yil-gecti/2647573",
+      "reported_cause": null
+    },
+    {
+      "event_id": "H394399",
+      "date": "2021-07-31",
+      "place": "Milas, Muğla",
+      "source": "Anadolu Ajansı",
+      "title": "Orman yangını Kemerköy Termik Santrali'nin tel örgülerine kadar yaklaştı",
+      "url": "https://www.aa.com.tr/tr/gundem/orman-yangini-kemerkoy-termik-santralinin-tel-orgulerine-kadar-yaklasti/2324748",
+      "reported_cause": null
+    },
+    {
+      "event_id": "H575257",
+      "date": "2025-07-20",
+      "place": "Geyve (Sakarya) to Osmaneli, Bilecik",
+      "source": "Anadolu Ajansı",
+      "title": "Sakarya'da ormanlık alanda çıkan yangın Bilecik tarafına sıçradı",
+      "url": "https://www.aa.com.tr/tr/gundem/sakaryada-ormanlik-alanda-cikan-yangin-bilecik-tarafina-sicradi/3637558",
+      "reported_cause": null
+    },
+    {
+      "event_id": "H394245",
+      "date": "2021-07-29",
+      "place": "Gündoğmuş to Alanya, Antalya",
+      "source": "Anadolu Ajansı",
+      "title": "Antalya Gündoğmuş'taki orman yangını Alanya'ya sıçradı",
+      "url": "https://www.aa.com.tr/tr/gundem/antalya-gundogmustaki-orman-yangini-alanyaya-sicradi-/2319930",
+      "reported_cause": null
+    },
+    {
+      "event_id": "H572877",
+      "date": "2025-06-29",
+      "place": "Menderes and Seferihisar, İzmir",
+      "source": "Anadolu Ajansı",
+      "title": "Bakan Yumaklı: Menderes ve Seferihisar'daki orman yangınlarının enerjisi düşürüldü",
+      "url": "https://www.aa.com.tr/tr/gundem/bakan-yumakli-menderes-ve-seferihisardaki-orman-yanginlarinin-enerjisi-dusuruldu/3617402",
+      "reported_cause": null
+    },
+    {
+      "event_id": "H574860",
+      "date": "2025-07-15",
+      "place": "Şarköy (Tekirdağ) to Gelibolu, Çanakkale",
+      "source": "Anadolu Ajansı",
+      "title": "Tekirdağ'dan Çanakkale'ye sıçrayan yangında zarar gören alanlar dronla görüntülendi",
+      "url": "https://www.aa.com.tr/tr/gundem/tekirdagdan-canakkaleye-sicrayan-yanginda-zarar-goren-alanlar-dronla-goruntulendi/3633403",
+      "reported_cause": null
+    },
+    {
+      "event_id": "H394258",
+      "date": "2021-07-29",
+      "place": "Marmaris, Muğla",
+      "source": "Anadolu Ajansı",
+      "title": "Marmaris'teki orman yangını, yerleşim yerine kadar ulaştı",
+      "url": "https://www.aa.com.tr/tr/gundem/marmaristeki-orman-yangini-yerlesim-yerine-kadar-ulasti/2321360",
+      "reported_cause": null
+    }
+  ]
+}

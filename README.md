@@ -233,6 +233,13 @@ Mediterranean/Aegean provinces in June–October tracks OGM's national burnt for
 (0.48 after removing linear trends), but not for MODIS alone (r = 0.03): OGM counts forest
 fires only, while most satellite events are small agricultural and pasture fires.
 
+**News confirmation** (`docs/data/news_refs.json`): the seven highest-energy events, including
+Manavgat and Marmaris 2021, are linked to Anadolu Ajansı reports matched by place and date, and
+the fire card shows "Reported in the news" for them; this does not change the Trust Score.
+In future, news confirmation can become a third, independent check next to the two satellites,
+while the cause of a fire can only come from field sources (forestry or judicial investigation),
+never from satellite data.
+
 ## Run it
 
 ```bash
