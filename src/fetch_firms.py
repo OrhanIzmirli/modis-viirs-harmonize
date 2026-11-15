@@ -112,8 +112,9 @@ def _get(url: str, key: str, retries: int = 60) -> str:
                 raise FirmsError("Invalid MAP_KEY")
             continue
         if "exceed" in low or r.status_code in (429, 500, 502, 503, 504):
-            time.sleep(min(delay, 300))
-            delay *= 2
+            print(f"retry after HTTP {r.status_code}, sleeping {min(delay, 120)} s", flush=True)
+            time.sleep(min(delay, 120))
+            delay = min(delay * 2, 120)
             continue
         raise FirmsError(f"HTTP {r.status_code}: {text[:200].replace(key, '***')}")
     raise FirmsError("retries exhausted")
@@ -196,7 +197,7 @@ def main() -> None:
                 continue
             done += 1
             rows += max(nrows, 0)
-            if done % 100 == 0:
+            if done % 50 == 0:
                 print(f"{done}/{len(jobs)} chunks, {rows} new rows", flush=True)
     print(f"finished: {done}/{len(jobs)} chunks, {rows} new rows")
 

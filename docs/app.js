@@ -390,10 +390,14 @@ function renderTimeline(ev) {
 // ---------------- Figure 4: two satellites, one truth ----------------
 async function renderStory() {
   const st = await getJSON("data/story.json").catch(() => null);
-  const c = S.meta.counts.harmonized, a = S.meta.agreement, tot = (a.both || 0) + (a.modis_only || 0) + (a.viirs_only || 0);
+  // Totals inside Türkiye's provinces, taken from the national calendar (the download box can
+  // also cover neighbouring countries, so the raw meta counts are not used for these sentences).
+  const trCal = await getJSON("data/calendar/TR.json"), H = trCal.modes.harmonized, sum = v => v.reduce((p, q) => p + q, 0);
+  const nM = sum(H.dm), nV = sum(H.dv), fdBoth = sum(H.b), fdAll = sum(H.b) + sum(H.mo) + sum(H.vo);
+  const c = { detections: nM + nV, events: S.meta.counts.harmonized.events_tr ?? S.meta.counts.harmonized.events };
   $("bigNum").innerHTML = `<span class="n">${fmt(c.detections)}</span> detections <span style="color:var(--muted)">→</span> <span class="n to">${fmt(c.events)}</span> fire events
     <small>From ${S.meta.first_day.slice(0, 4)} to ${S.meta.last_day.slice(0, 4)}, records of the same fire are merged: on average ${(c.detections / c.events).toFixed(1)} satellite detections describe one real fire.</small>`;
-  $("footNums").textContent = `This almanac holds ${fmt(c.detections)} satellite fire detections over Türkiye from ${S.meta.first_day.slice(0, 4)} to ${S.meta.last_day.slice(0, 4)} (${fmt(S.meta.counts.modis.detections)} from MODIS, ${fmt(S.meta.counts.viirs.detections)} from VIIRS), merged into ${fmt(c.events)} fire events. ${fmt(100 * (a.both || 0) / tot, 1)}% of those fires were seen by both satellites; most of the rest are small fires that only the sharper VIIRS instrument can see.`;
+  $("footNums").textContent = `This almanac holds ${fmt(c.detections)} satellite fire detections over Türkiye from ${S.meta.first_day.slice(0, 4)} to ${S.meta.last_day.slice(0, 4)} (${fmt(nM)} from MODIS, ${fmt(nV)} from VIIRS), merged into ${fmt(c.events)} fire events. On ${fmt(100 * fdBoth / fdAll, 1)}% of fire-days the fire was seen by both satellites; most of the rest are small fires that only the sharper VIIRS instrument can see.`;
   if (!st) return;
   const date = new Date(st.day + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
   $("storyLede").textContent = `${date}, around ${st.name}. Left: every pixel the two instruments flagged that day. Right: the same data after merging.`;
