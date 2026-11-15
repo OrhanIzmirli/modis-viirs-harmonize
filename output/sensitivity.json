@@ -1,0 +1,110 @@
+{
+  "year": 2021,
+  "subset": "detections inside Türkiye's 81 provinces",
+  "detections": 69628,
+  "default": {
+    "tol_km": 0.375,
+    "max_dt_h": 12.0
+  },
+  "runs": [
+    {
+      "tol_km": 0.1875,
+      "max_dt_h": 6.0,
+      "tol_change": "-50%",
+      "dt_change": "-50%",
+      "events": 25835,
+      "pct_both": 8.47,
+      "detections_per_event": 2.695,
+      "events_vs_default_pct": 6.0,
+      "pct_both_vs_default_pp": 0.47
+    },
+    {
+      "tol_km": 0.1875,
+      "max_dt_h": 12.0,
+      "tol_change": "-50%",
+      "dt_change": "+0%",
+      "events": 24810,
+      "pct_both": 7.83,
+      "detections_per_event": 2.806,
+      "events_vs_default_pct": 1.8,
+      "pct_both_vs_default_pp": -0.17
+    },
+    {
+      "tol_km": 0.1875,
+      "max_dt_h": 18.0,
+      "tol_change": "-50%",
+      "dt_change": "+50%",
+      "events": 24465,
+      "pct_both": 7.96,
+      "detections_per_event": 2.846,
+      "events_vs_default_pct": 0.3,
+      "pct_both_vs_default_pp": -0.04
+    },
+    {
+      "tol_km": 0.375,
+      "max_dt_h": 6.0,
+      "tol_change": "+0%",
+      "dt_change": "-50%",
+      "events": 25388,
+      "pct_both": 8.62,
+      "detections_per_event": 2.743,
+      "events_vs_default_pct": 4.1,
+      "pct_both_vs_default_pp": 0.62
+    },
+    {
+      "tol_km": 0.375,
+      "max_dt_h": 12.0,
+      "tol_change": "+0%",
+      "dt_change": "+0%",
+      "events": 24382,
+      "pct_both": 8.0,
+      "detections_per_event": 2.856,
+      "events_vs_default_pct": 0.0,
+      "pct_both_vs_default_pp": 0.0
+    },
+    {
+      "tol_km": 0.375,
+      "max_dt_h": 18.0,
+      "tol_change": "+0%",
+      "dt_change": "+50%",
+      "events": 24032,
+      "pct_both": 8.14,
+      "detections_per_event": 2.897,
+      "events_vs_default_pct": -1.4,
+      "pct_both_vs_default_pp": 0.14
+    },
+    {
+      "tol_km": 0.5625,
+      "max_dt_h": 6.0,
+      "tol_change": "+50%",
+      "dt_change": "-50%",
+      "events": 25042,
+      "pct_both": 8.76,
+      "detections_per_event": 2.78,
+      "events_vs_default_pct": 2.7,
+      "pct_both_vs_default_pp": 0.76
+    },
+    {
+      "tol_km": 0.5625,
+      "max_dt_h": 12.0,
+      "tol_change": "+50%",
+      "dt_change": "+0%",
+      "events": 24038,
+      "pct_both": 8.17,
+      "detections_per_event": 2.897,
+      "events_vs_default_pct": -1.4,
+      "pct_both_vs_default_pp": 0.17
+    },
+    {
+      "tol_km": 0.5625,
+      "max_dt_h": 18.0,
+      "tol_change": "+50%",
+      "dt_change": "+50%",
+      "events": 23681,
+      "pct_both": 8.32,
+      "detections_per_event": 2.94,
+      "events_vs_default_pct": -2.9,
+      "pct_both_vs_default_pp": 0.32
+    }
+  ]
+}

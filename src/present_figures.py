@@ -295,6 +295,91 @@ def fig_climate():
     print("wrote", FIG / "slide_climate.png", res["modis"])
 
 
+def fig_ogm():
+    """Our yearly series vs OGM official forest-fire statistics (table 2.11), 2001-2024.
+
+    OGM counts forest fires only, nationally; satellites also see agricultural and other vegetation
+    fires. Two scopes are compared and all results go to output/ogm_comparison.json:
+      * national: all of Türkiye, all months;
+      * forest scope: the 14 Mediterranean/Aegean provinces of docs/data/education.json, June-October.
+    Harmonized and MODIS-only records are both reported; detrended r guards against shared trends.
+    """
+    o = pd.read_csv(ROOT / "data" / "ogm" / "ogm_forest_fires_2001_2024.csv").set_index("year")
+    cal = json.loads((OUT / "calendar_daily.json").read_text(encoding="utf-8"))
+    med = json.loads((ROOT / "docs" / "data" / "education.json").read_text(encoding="utf-8"))["mediterranean_provinces"]
+    yrs = o.index.to_numpy()
+
+    def series(mode, regions, months=None):
+        tot = None
+        for reg in regions:
+            r = pd.DataFrame(cal["records"][mode].get(reg, []))
+            if r.empty:
+                continue
+            d = pd.to_datetime(r["day"])
+            if months:
+                r, d = r[d.dt.month.isin(months)], d[d.dt.month.isin(months)]
+            g = r.groupby(d.dt.year)[["new_events", "frp_mw"]].sum()
+            tot = g if tot is None else tot.add(g, fill_value=0)
+        return tot.reindex(o.index).fillna(0)
+
+    detr = lambda v: v - np.polyval(np.polyfit(yrs, v, 1), yrs)
+
+    def corr(a, b, log=False):
+        a, b = np.asarray(a, float), np.asarray(b, float)
+        if log:
+            a, b = np.log10(a), np.log10(b)
+        pr, sr, dr = stats.pearsonr(a, b), stats.spearmanr(a, b), stats.pearsonr(detr(a), detr(b))
+        return {"pearson_r": round(float(pr[0]), 3), "pearson_p": round(float(pr[1]), 4),
+                "spearman_rho": round(float(sr[0]), 3), "spearman_p": round(float(sr[1]), 4),
+                "detrended_r": round(float(dr[0]), 3), "detrended_p": round(float(dr[1]), 4)}
+
+    scopes = {"national": (["TR"], None), "forest_scope": (med, [6, 7, 8, 9, 10])}
+    res = {"years": [int(yrs[0]), int(yrs[-1])], "n": int(len(yrs)),
+           "ogm_source": "OGM Ormancılık İstatistikleri 2024, table 2.11 (data/ogm/SOURCE.md); national forest fires",
+           "forest_scope": "14 Mediterranean/Aegean provinces (docs/data/education.json), June-October"}
+    S = {}
+    for sc, (regs, mo) in scopes.items():
+        for mode in ("harmonized", "modis"):
+            s = S[(sc, mode)] = series(mode, regs, mo)
+            res[f"{sc}_{mode}"] = {"events_vs_ogm_fires": corr(s["new_events"], o["fires"]),
+                                   "log_frp_vs_log_burnt_area": corr(s["frp_mw"], o["burnt_area_ha"], log=True)}
+    (OUT / "ogm_comparison.json").write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    hn, hf = S[("national", "harmonized")], S[("forest_scope", "harmonized")]
+    cn, af = res["national_harmonized"]["events_vs_ogm_fires"], res["forest_scope_harmonized"]["log_frp_vs_log_burnt_area"]
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(13, 5.2), gridspec_kw={"width_ratios": [1.5, 1], "wspace": 0.25})
+    a1.plot(yrs, o["fires"] / o["fires"].mean(), "-o", color=INK, ms=3.5, lw=1.7, label="OGM: forest fires (count)")
+    a1.plot(yrs, hn["new_events"] / hn["new_events"].mean(), "-o", color=ACCENT, ms=3.5, lw=1.7,
+            label="Satellite: fire events, all Türkiye (merged)")
+    a1.axhline(1, color=MUTED, lw=0.8, ls=":")
+    for x0, lab in ((2012, "VIIRS joins"), (2018, "NOAA-20")):
+        a1.axvline(x0 - 0.5, color=MUTED, lw=0.8, ls=":")
+        a1.text(x0 - 0.4, a1.get_ylim()[1] * 0.97, lab, fontsize=8.5, color=MUTED, va="top")
+    a1.set_ylabel("ratio to own 2001–2024 mean")
+    a1.legend(loc="lower right", fontsize=9.5)
+    a1.set_title(f"Counts: r = {cn['pearson_r']:.2f}, detrended r = {cn['detrended_r']:.2f}", fontsize=12.5)
+    a2.scatter(o["burnt_area_ha"], hf["frp_mw"] / 1000, s=34, color=ACCENT, edgecolor=PAPER, lw=0.6, zorder=3)
+    for yy in (2008, 2021, 2014, 2024):
+        a2.annotate(str(yy), (o.loc[yy, "burnt_area_ha"], hf.loc[yy, "frp_mw"] / 1000), xytext=(5, 3),
+                    textcoords="offset points", fontsize=8.5, color=INK2)
+    a2.set_xscale("log"); a2.set_yscale("log")
+    a2.set_xlabel("OGM burnt forest area, Türkiye (ha, log)")
+    a2.set_ylabel("fire energy, Med./Aegean Jun–Oct (GW, log)")
+    a2.set_title(f"Area vs energy: r(log) = {af['pearson_r']:.2f}, \u03c1 = {af['spearman_rho']:.2f}", fontsize=12.5)
+    mn, mf = res["national_modis"], res["forest_scope_modis"]
+    fig.text(0.01, -0.035,
+             "Sources: NASA FIRMS; OGM Forestry Statistics 2024, table 2.11. 2001–2024 (OGM 2025 not yet published).\n"
+             "Different scopes: OGM counts forest fires only; satellites also see agricultural, pasture and other vegetation "
+             "fires.\nRight panel: satellite energy from 14 Mediterranean/Aegean provinces, June–October, vs national OGM area. "
+             f"MODIS only: counts r = {mn['events_vs_ogm_fires']['pearson_r']:.2f},\n"
+             f"area vs energy r(log) = {mf['log_frp_vs_log_burnt_area']['pearson_r']:.2f}. Merged record r is partly a shared "
+             "upward trend (more satellites, more reported fires). Correlation, not calibration.",
+             fontsize=8.5, color=MUTED, family="monospace", ha="left", va="top")
+    fig.savefig(FIG / "slide_ogm.png", dpi=300, bbox_inches="tight", pad_inches=0.25)
+    plt.close(fig)
+    print("wrote", FIG / "slide_ogm.png", json.dumps(res, ensure_ascii=False))
+
+
 if __name__ == "__main__":
     fig_2021()
     fig_before_after()
@@ -303,3 +388,4 @@ if __name__ == "__main__":
     fig_dedup()
     og_cover()
     fig_climate()
+    fig_ogm()

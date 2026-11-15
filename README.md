@@ -97,6 +97,10 @@ Source: NASA Goddard Institute for Space Studies, <https://data.giss.nasa.gov/gi
 (open CSV `tabledata_v4/GLB.Ts+dSST.csv`, no key; copy in `data/gistemp/`). Used only for
 the climate comparison figure.
 
+Official reference (not NASA): OGM *Ormancılık İstatistikleri 2024*, table 2.11 "Orman yangınları,
+1988–2024" (number of forest fires and burnt area), <https://www.ogm.gov.tr/tr/e-kutuphane/resmi-istatistikler>;
+copy and source note in `data/ogm/`. Used only for validation.
+
 **How the data was fetched.** `src/fetch_firms.py` downloaded the four standard-processing
 sources (`MODIS_SP`, `VIIRS_SNPP_SP`, `VIIRS_NOAA20_SP`, `VIIRS_NOAA21_SP`) through the FIRMS
 **Area API** for the Türkiye bounding box (25.6–44.9 E, 35.8–42.2 N), 2001–2025, in 3,621 five-day
@@ -216,6 +220,18 @@ Türkiye's yearly fire energy from the MODIS record (the only sensor-consistent 
 2001–2025): Pearson r = 0.10 (p = 0.64), Spearman ρ = 0.17 (p = 0.43), detrended r = −0.11.
 The merged MODIS+VIIRS total gives r = 0.77, but that mostly reflects VIIRS satellites joining in
 2012, 2018 and 2023, not fire. Correlation is reported, not causation. Values in `output/climate.json`.
+
+**Threshold sensitivity** (`src/sensitivity.py`, 2021, detections inside Türkiye): moving the
+spatial tolerance (0.375 km) and the time window (12 h) by ±50 % changes the number of fire events
+by −2.9 % to +6.0 % and the share seen by both sensors by −0.2 to +0.8 percentage points
+(8.0 % at the defaults), so the results do not hinge on the exact thresholds (`output/sensitivity.json`).
+
+**Comparison with official statistics** (`figures/slide_ogm.png`, `output/ogm_comparison.json`):
+OGM (General Directorate of Forestry) table 2.11, 2001–2024. Satellite fire energy from the 14
+Mediterranean/Aegean provinces in June–October tracks OGM's national burnt forest area
+(r(log) = 0.76, Spearman ρ = 0.72). Yearly counts correlate at r = 0.66 for the merged record
+(0.48 after removing linear trends), but not for MODIS alone (r = 0.03): OGM counts forest
+fires only, while most satellite events are small agricultural and pasture fires.
 
 ## Run it
 
