@@ -201,7 +201,10 @@ def og_cover():
     fig.patch.set_facecolor(PAPER)
     fig.text(0.05, 0.86, "THE FIRE ALMANAC OF TÜRKIYE · 2001–2025", family="monospace", fontsize=13, color=MUTED)
     fig.text(0.05, 0.62, "When does\nTürkiye burn?", fontsize=46, fontweight="bold", color=INK, va="center", linespacing=1.0)
-    fig.text(0.05, 0.36, "25 years of MODIS and VIIRS fire\ndetections in one weekly calendar.", fontsize=17, color=INK2, va="center")
+    fig.text(0.05, 0.40, "25 years of MODIS and VIIRS fire\ndetections in one weekly calendar.", fontsize=17, color=INK2, va="center")
+    n_det, n_ev = int(r["det_modis"].sum() + r["det_viirs"].sum()), int(r["new_events"].sum())
+    fig.text(0.05, 0.255, f"{n_det:,} detections", fontsize=19, fontweight="bold", color=INK, va="center")
+    fig.text(0.05, 0.195, f"→ {n_ev:,} fire events", fontsize=19, fontweight="bold", color=ACCENT, va="center")
     fig.text(0.05, 0.12, "NASA FIRMS · MODIS C6.1 & VIIRS 375 m · FireWatch TR", family="monospace", fontsize=11, color=MUTED)
     fig.add_artist(plt.Line2D([0.05, 0.95], [0.80, 0.80], color=INK, lw=1.2, transform=fig.transFigure))
     ax = fig.add_axes([0.53, 0.10, 0.43, 0.66])
@@ -225,6 +228,73 @@ def og_cover():
     print("wrote docs/og.png, docs/og-icon.png")
 
 
+def fig_climate():
+    """Global temperature anomaly (NASA GISTEMP v4, J-D) vs Türkiye's yearly fire energy, 2001-2025.
+
+    Fire energy is the MODIS-only record (Terra+Aqua, inside the 81 provinces): it is the only
+    sensor-consistent series for the whole period. The harmonized/VIIRS totals rise when new VIIRS
+    satellites join (2012, 2018, 2023), which would correlate with any upward trend, so their r is
+    reported for comparison only. Correlation, not causation.
+    """
+    g = pd.read_csv(ROOT / "data" / "gistemp" / "GLB.Ts+dSST.csv", skiprows=1, na_values="***")
+    g = g[g["Year"].between(2001, 2025)].set_index("Year")["J-D"].astype(float)
+    cal = json.loads((OUT / "calendar_daily.json").read_text(encoding="utf-8"))
+    tot = {}
+    for mode in ("modis", "harmonized"):
+        r = pd.DataFrame(cal["records"][mode]["TR"])
+        tot[mode] = r.groupby(pd.to_datetime(r["day"]).dt.year)["frp_mw"].sum().reindex(g.index).fillna(0)
+    y = tot["modis"] / 1000  # GW
+    pr, sr = stats.pearsonr(g, y), stats.spearmanr(g, y)
+    yrs = g.index.to_numpy()
+    detr = lambda v: v - np.polyval(np.polyfit(yrs, v, 1), yrs)
+    pd_ = stats.pearsonr(detr(g.to_numpy()), detr(y.to_numpy()))
+    ph = stats.pearsonr(g, tot["harmonized"])
+    res = {"years": [int(yrs[0]), int(yrs[-1])], "n": int(len(yrs)),
+           "gistemp_series": "GISTEMP v4 global land-ocean, annual (J-D), anomaly vs 1951-1980 (deg C)",
+           "frp_series": "MODIS Terra+Aqua, yearly sum of daily FRP inside Türkiye (MW)",
+           "modis": {"pearson_r": round(float(pr[0]), 3), "p": round(float(pr[1]), 3),
+                     "spearman_rho": round(float(sr[0]), 3), "spearman_p": round(float(sr[1]), 3),
+                     "detrended_pearson_r": round(float(pd_[0]), 3), "detrended_p": round(float(pd_[1]), 3)},
+           "harmonized_for_comparison": {"pearson_r": round(float(ph[0]), 3), "p": round(float(ph[1]), 4),
+                                         "note": "inflated by VIIRS satellites joining in 2012, 2018, 2023"}}
+    (OUT / "climate.json").write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    fig = plt.figure(figsize=(13, 5.6))
+    gs = fig.add_gridspec(2, 2, width_ratios=[1.75, 1], height_ratios=[1, 1.35], hspace=0.12, wspace=0.22)
+    a1 = fig.add_subplot(gs[0, 0])
+    a2 = fig.add_subplot(gs[1, 0], sharex=a1)
+    a3 = fig.add_subplot(gs[:, 1])
+    a1.plot(yrs, g, "-o", color=INK, ms=3.5, lw=1.6)
+    a1.set_ylabel("global temp.\nanomaly (°C)")
+    a1.tick_params(labelbottom=False)
+    a1.set_title("Global temperature and Türkiye's fire energy, 2001–2025", fontsize=13.5)
+    cols = [ACCENT if yy == 2021 else MODIS for yy in yrs]
+    a2.bar(yrs, y, 0.72, color=cols)
+    a2.set_ylabel("fire energy (GW,\nMODIS, yearly sum)")
+    a2.text(2021, y.loc[2021], "2021", ha="center", va="bottom", fontsize=9, color=ACCENT)
+    a3.scatter(g, y, s=34, color=MODIS, edgecolor=PAPER, lw=0.6, zorder=3)
+    a3.scatter([g.loc[2021]], [y.loc[2021]], s=46, color=ACCENT, zorder=4)
+    for yy in (2001, 2009, 2021, 2025):
+        a3.annotate(str(yy), (g.loc[yy], y.loc[yy]), xytext=(5, 3), textcoords="offset points", fontsize=8.5,
+                    color=ACCENT if yy == 2021 else INK2)
+    a3.set_xlabel("global temperature anomaly (°C)")
+    a3.set_ylabel("fire energy (GW)")
+    m = res["modis"]
+    a3.set_title(f"Pearson r = {m['pearson_r']:.2f} (p = {m['p']:.2f})", fontsize=12)
+    a3.text(0.98, 0.97, f"Spearman ρ = {m['spearman_rho']:.2f} (p = {m['spearman_p']:.2f})\n"
+                        f"detrended r = {m['detrended_pearson_r']:.2f}\nn = {res['n']} years",
+            transform=a3.transAxes, fontsize=9, color=INK2, va="top", ha="right", family="monospace")
+    fig.text(0.01, -0.035,
+             "Sources: NASA FIRMS; NASA GISTEMP. Fire energy: MODIS Terra+Aqua only (Aqua from Jul 2002), the "
+             "sensor-consistent record.\nThe merged MODIS+VIIRS total gives r = "
+             f"{res['harmonized_for_comparison']['pearson_r']:.2f}, mostly because VIIRS satellites joined in "
+             "2012, 2018 and 2023. Correlation, not causation.",
+             fontsize=8.5, color=MUTED, family="monospace", ha="left", va="top")
+    fig.savefig(FIG / "slide_climate.png", dpi=300, bbox_inches="tight", pad_inches=0.25)
+    plt.close(fig)
+    print("wrote", FIG / "slide_climate.png", res["modis"])
+
+
 if __name__ == "__main__":
     fig_2021()
     fig_before_after()
@@ -232,3 +302,4 @@ if __name__ == "__main__":
     fig_match()
     fig_dedup()
     og_cover()
+    fig_climate()

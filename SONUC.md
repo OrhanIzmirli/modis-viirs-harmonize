@@ -24,13 +24,14 @@ _Son güncelleme: 15 Kasım 2026, ~04:20 TR. Veri: **FIRMS Area API**, 3.621/3.6
 | Eşleşme MODIS→VIIRS (≤12 sa) | gündüz %56, gece %62 |
 | Eşleşme VIIRS→MODIS (≤12 sa) | gündüz %27, gece %31 |
 | En sıra dışı hafta (Türkiye, yangın enerjisi) | 26 Tem–1 Ağu 2021: 601.798 MW, ortalamanın **34,9 katı**, z = 54; ardından 2–8 Ağu 2021 (z = 17) |
-| Trend | Sezon uzunluğu MODIS +4,9 gün/yıl (p<0,001), VIIRS S-NPP +7,0 gün/yıl (p=0,014); toplam FRP'de anlamlı trend yok |
+| Trend | Toplam FRP'de anlamlı trend yok. Sezon uzunluğu eğimi (MODIS +4,9 gün/yıl) tanım sorunu nedeniyle sunumda **kullanılmıyor**, yalnızca README Limitations'ta |
+| İklim (GISTEMP) | MODIS yıllık FRP vs küresel sıcaklık anomalisi: r = 0,10 (p = 0,64), ilişki yok. Birleşik kayıtta r = 0,77 ama uydu eklenmelerinden kaynaklı |
 | Testler | `pytest` 21/21 geçti |
 
 **2021 kontrolü:** Temmuz–Ağustos 2021 yangın enerjisinde arşivin en uç dönemi ve takvimde 1. ve 2. sırada. Ülke genelinde *olay sayısında* sıra dışı değil (z −1,3…−0,2), çünkü dev yangınlar tek olaya indiriliyor. Antalya ve Muğla'da iki metrikte de çok belirgin. Varsayılan metrik bu yüzden FRP.
 
 ### Üretilen figürler (`figures/`)
-- Slayt (300 dpi, kağıt zemin, kaynak satırlı): `slide_2021_unusual.png`, `slide_before_after.png` (1.540 tespit → 3 olay), `slide_frp_scatter.png` (r = 0,69), `slide_match_rates.png`, `slide_dedup.png`
+- Slayt (300 dpi, kağıt zemin, kaynak satırlı): `slide_2021_unusual.png`, `slide_before_after.png` (1.540 tespit → 3 olay), `slide_frp_scatter.png` (r = 0,69), `slide_match_rates.png`, `slide_dedup.png`, `slide_climate.png`
 - Doğrulama: `match_rates.png`, `frp_scatter.png`, `dedup.png`, `small_fire_example.png` (Ankara, Eki 2023: 4 VIIRS tespiti, 15 km içinde MODIS yok), `insight.png`, `calendar_2021_check.png`
 - Uygulama görüntüsü: `app_calendar.jpg`; sosyal önizleme kapağı: `docs/og.png`
 
@@ -54,7 +55,7 @@ _Son güncelleme: 15 Kasım 2026, ~04:20 TR. Veri: **FIRMS Area API**, 3.621/3.6
 2. **firewatch-tr-backend facts dosyası yok:** `public/nature/facts.json` bulunamadı. Doğrulanmış havuz firewatch-tr uygulamasındaki `assets/data/nature_facts.json`. 15 bilgi oradan (hepsi "Doğrulandı") salt okunarak alındı, üslubu sadeleştirildi, anlam ve kaynak aynı. Firewatch repolarına yazılmadı.
 3. **İzin engeli:** Pipeline'a (`meta.json`) il içi sayaç ekleme isteği otomatik izin sistemi tarafından reddedildi (pipeline'a dokunma kuralı). Aynı sayılar sunum katmanında `calendar/TR.json`'dan hesaplanıyor, sonuç etkilenmedi.
 4. **MODIS sayısı farkı:** Area API'deki MODIS tespiti (il içi 232.808), ülke arşivindekinden (242.661) biraz az. Ülke dosyası sınır ve kıyıda tampon kullanıyor olabilir; incelenmedi.
-5. **`figures/app_calendar.jpg`** ülke-arşivi verisiyle alınmış ekran görüntüsü; görünüm aynı, küçük sayı farkları var. İsterseniz yenilenir.
+5. **`figures/app_calendar.jpg`** ve `docs/og.png` Area API verisiyle yenilendi (988.698 tespit → 448.364 olay görünüyor). `figures/insight.png` başlığındaki "season lengthened" cümlesi eski; figür sadece doğrulama amaçlı, sunumda kullanmayın.
 6. Bilinen yöntem sınırlamaları README "Limitations" bölümünde: homojen olmayan sensör kaydı, Terra/Aqua yörünge kayması, statik kaynaklar, il = olay merkezi.
 
 ---

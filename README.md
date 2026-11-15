@@ -25,7 +25,7 @@ covers parts of neighbouring countries; those events are kept in the files but n
 | Harmonized fire events inside Türkiye | **448,364** (2.2 detections per event) |
 | Seen by both sensors / MODIS only / VIIRS only | 7.8% / 22.9% / 69.2% of events (8.7% of fire-days seen by both) |
 | Most unusual week, Türkiye, fire energy | **26 Jul – 1 Aug 2021**: 601,798 MW, 35× the 2012–2025 mean for that week (z = 54); next: 2–8 Aug 2021 (z = 17) |
-| Fire-season length trend | **+4.9 days/yr** (MODIS, 2001–2025, p < 0.001) and **+7.0 days/yr** (VIIRS S-NPP, 2012–2025, p = 0.014); no significant trend in total FRP |
+| Yearly fire energy vs global temperature (NASA GISTEMP) | MODIS record, 2001–2025: Pearson r = 0.10 (p = 0.64), no detectable relationship; no significant trend in total FRP |
 
 **The 2021 check.** Summer 2021 (Manavgat, Marmaris) is the strongest anomaly in the
 whole archive when activity is measured as fire energy. Nationally, however, it is
@@ -88,6 +88,14 @@ from the pipeline outputs.
 
 Source: NASA FIRMS (Fire Information for Resource Management System),
 <https://firms.modaps.eosdis.nasa.gov/>. Standard-processing (science-quality) archive.
+
+| Climate product | Provider | Resolution | Used period |
+|---|---|---|---|
+| GISTEMP v4 global land-ocean temperature anomaly (annual J-D, vs 1951–1980) | NASA GISS | global mean | 2001–2025 |
+
+Source: NASA Goddard Institute for Space Studies, <https://data.giss.nasa.gov/gistemp/>
+(open CSV `tabledata_v4/GLB.Ts+dSST.csv`, no key; copy in `data/gistemp/`). Used only for
+the climate comparison figure.
 
 **How the data was fetched.** `src/fetch_firms.py` downloaded the four standard-processing
 sources (`MODIS_SP`, `VIIRS_SNPP_SP`, `VIIRS_NOAA20_SP`, `VIIRS_NOAA21_SP`) through the FIRMS
@@ -193,17 +201,21 @@ All numbers come from `output/validation.json` (written by `src/validate.py`).
 | `figures/frp_scatter.png`, `figures/slide_frp_scatter.png` | FRP of Aqua vs S-NPP/NOAA-20 for the same event, passes ≤ 30 min apart | n = 25,171 pairs; **Pearson r (log) = 0.69**, Spearman ρ = 0.63, log-log slope 0.78; median VIIRS/MODIS ratio 0.81 (day r = 0.69, night r = 0.74) |
 | `figures/dedup.png`, `figures/slide_dedup.png` | Raw detections vs harmonized events per year (whole download box) | 1,423,446 → 598,750 (**2.4×**); the ratio rises after 2012, 2018 and 2023 as VIIRS satellites add repeat looks |
 | `figures/small_fire_example.png` | FRP distribution of VIIRS-only vs both-sensor events, and one small fire missed by MODIS | VIIRS-only events: median max FRP **3.8 MW** vs 20.2 MW for both-sensor events. Example H478349 (Ankara, 24–25 Oct 2023): 4 VIIRS detections on 4 passes, max 0.9 MW, **no MODIS detection within 15 km** |
-| `figures/insight.png` | Season start/end/length and total FRP per year, single-sensor records, Theil–Sen + Kendall | Season length +4.9 d/yr (MODIS, p < 0.001) and +7.0 d/yr (S-NPP, p = 0.014), mostly from later season ends; season start earlier for MODIS (p = 0.003) but not significant for S-NPP (p = 0.08); **no significant trend in total FRP** (p = 0.50 / 0.91) |
+| `figures/insight.png` | Season start/end/length and total FRP per year, single-sensor records, Theil–Sen + Kendall **No significant trend in total FRP** (p = 0.50 / 0.91). The 10–90% season-length statistic also shows a positive slope, but it is not used as a result (see Limitations) |
 | `figures/calendar_2021_check.png`, `figures/slide_2021_unusual.png` | Türkiye 2021 weekly totals vs leave-one-out mean | FRP weeks 30–31: z = 54 and 17; event counts: not anomalous (see above) |
 
 **Slide figures** (`src/present_figures.py`, 300 dpi, paper background):
 `figures/slide_2021_unusual.png` (summer 2021 flagged in the calendar),
 `figures/slide_before_after.png` (29 July 2021, Manavgat: 1,540 detections → 3 events),
 `figures/slide_frp_scatter.png` (r = 0.69), `figures/slide_match_rates.png` and
-`figures/slide_dedup.png` (raw detections vs fire events per year).
+`figures/slide_dedup.png` (raw detections vs fire events per year) and
+`figures/slide_climate.png` (yearly fire energy vs NASA GISTEMP, r = 0.10).
 
-The season-length trend counts all vegetation fires, including agricultural burning;
-it does not by itself say why seasons got longer.
+`figures/slide_climate.png` compares NASA GISTEMP v4 global annual temperature anomaly with
+Türkiye's yearly fire energy from the MODIS record (the only sensor-consistent series for
+2001–2025): Pearson r = 0.10 (p = 0.64), Spearman ρ = 0.17 (p = 0.43), detrended r = −0.11.
+The merged MODIS+VIIRS total gives r = 0.77, but that mostly reflects VIIRS satellites joining in
+2012, 2018 and 2023, not fire. Correlation is reported, not causation. Values in `output/climate.json`.
 
 ## Run it
 
@@ -248,6 +260,14 @@ the transaction limit.
   Rectangle selection uses event centroids too.
 * **Fixed thresholds.** 12 h / footprint + 0.375 km and the confidence weights are
   reasoned defaults, not fitted parameters; they are tested and easy to change.
+* **Fire-season length is not a reliable trend here.** `validate.py` defines the season as
+  the 10th–90th percentile of event start dates in each calendar year and counts all
+  vegetation fires, agricultural burning included. In Türkiye that distribution is bimodal
+  (small winter/spring and autumn burns vs the summer peak), so the 10% date jumps between
+  modes (e.g. day 155 in 2011, day 46 in 2021) as the share of off-season small fires
+  changes (Nov–Dec share of MODIS detections: about 4–10% before 2012, 15–30% after). The
+  single-sensor record removes satellite additions but not Terra/Aqua orbit drift. The
+  positive slope (MODIS +4.9 d/yr) is therefore kept as a diagnostic, not a result.
 * **z-scores at low counts.** With 14 baseline years and skewed weekly totals, z > 1.5
   fires in roughly 10% of weeks; the ranked "most unusual weeks" list and the strong
   outline (z ≥ 5) separate exceptional periods from noise.
