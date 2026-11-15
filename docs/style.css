@@ -46,7 +46,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 600; margin: 0; letter-spac
 .how > div:nth-child(3) { padding-top: 26px; }
 .who-t { font-family: var(--serif); font-size: 18.5px; line-height: 1.5; margin: 8px 0 0; color: var(--ink); }
 .who > div:nth-child(2) { padding-top: 30px; }
-.num { font-family: var(--mono); font-size: 15px; color: var(--accent); }
+.num { font-family: var(--mono); font-size: 15px; color: var(--accent); white-space: nowrap; }
 .num::after { content: " —"; color: var(--muted); }
 h2 { font-size: clamp(32px, 4vw, 48px); line-height: 1.08; }
 h3 { font-size: 21px; margin-bottom: 8px; }
@@ -99,8 +99,10 @@ select { min-width: 210px; text-transform: none; letter-spacing: 0; }
 .calendar rect.w { cursor: pointer; transform-box: fill-box; transform-origin: center; transition: transform .12s ease; }
 .calendar rect.w:hover { transform: scale(1.5); stroke: var(--ink); stroke-width: .8; }
 .calendar rect.w.sel { stroke: var(--ink); stroke-width: 1.6; }
-.calendar rect.unusual { fill: none; stroke: var(--accent); stroke-width: 1; pointer-events: none; }
-.calendar rect.unusual.strong { stroke: #8f1d07; stroke-width: 1.8; }
+:root { --unusual: var(--accent); --unusual-strong: #8f1d07; }
+body.cb { --unusual: #1a1816; --unusual-strong: #000; }
+.calendar rect.unusual { fill: none; stroke: var(--unusual); stroke-width: 1; pointer-events: none; }
+.calendar rect.unusual.strong { stroke: var(--unusual-strong); stroke-width: 1.8; }
 .calendar rect.focus { fill: none; stroke: var(--ink); stroke-width: 1.4; pointer-events: none; animation: blink 1.4s ease-in-out 4; }
 @keyframes blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 .calendar .risky { fill: var(--accent); }

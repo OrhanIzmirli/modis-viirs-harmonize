@@ -226,8 +226,8 @@ function renderCalendar() {
   svg.addEventListener("click", e => { const t = e.target; if (t.dataset.w) selectWeek(+t.dataset.y, +t.dataset.w); });
 
   $("calLegend").innerHTML = `<span class="ramp">less ${RAMP.map(c => `<i style="background:${c}"></i>`).join("")} more</span>
-    <span><i style="background:none;border:1px solid var(--accent)"></i>unusual week (more than 1.5 standard deviations above normal)</span>
-    <span><i style="background:none;border:1.8px solid #8f1d07"></i>exceptional (more than 5)</span>`;
+    <span><i style="background:none;border:1px solid var(--unusual)"></i>unusual week (more than 1.5 standard deviations above normal)</span>
+    <span><i style="background:none;border:1.8px solid var(--unusual-strong)"></i>exceptional (more than 5)</span>`;
 
   const ranked = [];
   for (const yy of S.meta.years) wk.W[yy].forEach((s, w) => { if (s.unusual) ranked.push({ y: yy, w, z: s.z, s }); });
@@ -236,6 +236,10 @@ function renderCalendar() {
     const d = weekRange(r.y, r.w)[0];
     return `<button class="chip" data-y="${r.y}" data-w="${r.w}">${dayTxt(d)} <b>${ratioTxt(r.s.x, r.s.mean)}</b></button>`; }).join(" · ") : "none");
   $("toprank").querySelectorAll(".chip").forEach(b => b.addEventListener("click", () => selectWeek(+b.dataset.y, +b.dataset.w)));
+  if (box.scrollWidth > box.clientWidth + 4) { // phones: bring the selected week (or midsummer) into view
+    const wc = S.week != null ? S.week : 30;
+    box.scrollLeft = Math.max(0, L0 + wc * P - box.clientWidth / 2);
+  }
 }
 function focusWeek(y, w) { // brief highlight animation around a week cell
   const svg = $("calendar").querySelector("svg"); if (!svg) return;
@@ -268,6 +272,10 @@ function renderNormal() {
 }
 
 // ---------------- Figure 2: month by month ----------------
+function niceMax(v) { // round axis top so the 4 gridlines get round labels
+  const raw = v / 4, mag = 10 ** Math.floor(Math.log10(raw)), f = raw / mag;
+  return 4 * (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * mag;
+}
 function renderMonths() {
   const box = $("months"); box.innerHTML = "";
   const cal = S.cal[S.mode], m = S.metric, y = S.year, base = baselineYears(S.mode);
@@ -279,7 +287,7 @@ function renderMonths() {
   $("monthTitle").textContent = `Month by month, ${regionName()}, ${y}`;
   $("monthSub").textContent = cur[pk] > 0 ? `In ${y}, ${MONTHS_LONG[pk]} was the busiest month: ${ratioTxt(cur[pk], mean[pk])} its long-term average.` : `No fire activity recorded in ${y}.`;
   const W = Math.max(box.clientWidth, 300), H = 230, pl = 54, pb = 22, pt = 8, pr = 6;
-  const max = Math.max(1, ...cur, ...mean) * 1.08, sx = (W - pl - pr) / 12, sy = v => H - pb - (H - pb - pt) * v / max;
+  const max = niceMax(Math.max(1, ...cur, ...mean) * 1.02), sx = (W - pl - pr) / 12, sy = v => H - pb - (H - pb - pt) * v / max;
   const svg = svgEl("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, box), g = svgEl("g", { class: "grid" }, svg);
   for (let i = 0; i <= 4; i++) { const v = max * i / 4; svgEl("line", { x1: pl, x2: W - pr, y1: sy(v), y2: sy(v) }, g);
     svgEl("text", { x: pl - 6, y: sy(v) + 4, "text-anchor": "end" }, svg).textContent = fmt(v, 0); }
@@ -310,7 +318,7 @@ function renderCompare() {
   else { const both = b + vo > 0 ? Math.round(100 * vo / (b + vo + 1e-9)) : 0;
     $("cmpSub").textContent = `In ${y}, MODIS alone saw ${fmt(series.modis.reduce((a, v) => a + v, 0))} and VIIRS alone ${fmt(series.viirs.reduce((a, v) => a + v, 0))} ${METRIC[m].name} (summed by week). Merged, ${fmt(nn)} fires began that year. Most of the extra ones are small fires that only VIIRS resolves.`; }
   const W = Math.max(box.clientWidth, 300), H = 230, pl = 54, pb = 22, pt = 8, pr = 6;
-  const max = Math.max(1, ...series.modis, ...series.viirs, ...series.harmonized) * 1.08;
+  const max = niceMax(Math.max(1, ...series.modis, ...series.viirs, ...series.harmonized) * 1.02);
   const sx = (W - pl - pr) / 53, sy = v => H - pb - (H - pb - pt) * v / max;
   const svg = svgEl("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, box), g = svgEl("g", { class: "grid" }, svg);
   for (let i = 0; i <= 4; i++) { const v = max * i / 4; svgEl("line", { x1: pl, x2: W - pr, y1: sy(v), y2: sy(v) }, g);
@@ -348,7 +356,8 @@ async function renderMap() {
     const r = rng ? Math.max(3, Math.min(18, 2 * Math.log1p(ev.sumFrp))) : Math.max(1.5, Math.min(9, 0.9 * Math.log1p(ev.sumFrp)));
     const c = L.circleMarker([ev.lat, ev.lon], { renderer: canvas, radius: r, weight: ev === S.sel ? 2.5 : 0.7, color: ev === S.sel ? css("--ink") : "#faf7f2",
       fillColor: COL[ev.agree], fillOpacity: 0.3 + 0.6 * conf });
-    c.on("click", () => { S.sel = ev; renderDetail(ev); renderMap(); });
+    c.on("click", () => { S.sel = ev; renderDetail(ev); renderMap();
+      if (innerWidth < 900) $("detail").scrollIntoView({ behavior: "smooth", block: "start" }); });
     c.bindTooltip(`${AGREE_LABEL[ev.agree]} · Trust Score ${Math.round(100 * ev.conf)}%`, { direction: "top" });
     evLayer.addLayer(c);
   }
@@ -389,10 +398,11 @@ function renderDetail(ev) {
 function renderTimeline(ev) {
   const box = $("timeline"), W = Math.max(box.clientWidth, 260), rows = SATS.filter((s, i) => ev.tl.some(p => p[1] === i));
   const H = 30 + rows.length * 24, pl = 64, pr = 12, span = Math.max(60, ev.tl[ev.tl.length - 1][0]);
-  const svg = svgEl("svg", { width: W, height: H, viewBox: `0 0 ${W} ${H}` }, box), sx = m => pl + (W - pl - pr) * m / span;
+  const svg = svgEl("svg", { width: "100%", height: H, viewBox: `0 0 ${W} ${H}`, preserveAspectRatio: "xMinYMin meet" }, box), sx = m => pl + (W - pl - pr) * m / span;
+  const days = span >= 2880, lab = t => t === 0 ? "0" : days ? `+${(t / 1440).toFixed(1)} d` : `+${(t / 60).toFixed(t < 600 ? 1 : 0)} h`;
   const ticks = span <= 180 ? [0, span] : [0, span / 4, span / 2, 3 * span / 4, span];
   ticks.forEach(t => { svgEl("line", { x1: sx(t), x2: sx(t), y1: 6, y2: H - 18, stroke: css("--rule2") }, svg);
-    svgEl("text", { x: sx(t), y: H - 4, "text-anchor": "middle" }, svg).textContent = t >= 2880 ? `+${(t / 1440).toFixed(1)} d` : `+${(t / 60).toFixed(t < 600 ? 1 : 0)} h`; });
+    svgEl("text", { x: sx(t), y: H - 4, "text-anchor": t === span ? "end" : t === 0 ? "start" : "middle" }, svg).textContent = lab(t); });
   const maxF = Math.max(...ev.tl.map(p => p[3]), 1);
   rows.forEach((s, ri) => { const yy = 15 + ri * 24; svgEl("text", { x: 0, y: yy + 4 }, svg).textContent = s;
     svgEl("line", { x1: pl, x2: W - pr, y1: yy, y2: yy, stroke: css("--rule") }, svg); });
